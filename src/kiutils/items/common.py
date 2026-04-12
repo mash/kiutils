@@ -335,6 +335,8 @@ class Font():
                 object.height = item[1]
                 object.width = item[2]
             if item[0] == 'thickness': object.thickness = item[1]
+            if item[0] == 'bold': object.bold = True if item[1] == 'yes' else False
+            if item[0] == 'italic': object.italic = True if item[1] == 'yes' else False
             if item[0] == 'line_spacing': object.lineSpacing = item[1]
             if item[0] == 'color': object.color = ColorRGBA.from_sexpr(item)
         return object
@@ -355,8 +357,8 @@ class Font():
 
         if self.face is not None:        face_name = f'(face "{dequote(self.face)}") '
         if self.thickness is not None:   thickness = f' (thickness {self.thickness})'
-        if self.bold == True:            bold = ' bold'
-        if self.italic == True:          italic = ' italic'
+        if self.bold == True:            bold = ' (bold yes)'
+        if self.italic == True:          italic = ' (italic yes)'
         if self.lineSpacing is not None: linespacing = f' (line_spacing {self.lineSpacing})'
         if self.color is not None:       color = f' {self.color.to_sexpr()}'
 
@@ -485,6 +487,7 @@ class Effects():
             if item[0] == 'font': object.font = Font().from_sexpr(item)
             if item[0] == 'justify': object.justify = Justify().from_sexpr(item)
             if item[0] == 'href': object.href = item[1]
+            if item[0] == 'hide': object.hide = True if item[1] == 'yes' else False
         return object
 
     def to_sexpr(self, indent=0, newline=True) -> str:
@@ -501,7 +504,7 @@ class Effects():
         endline = '\n' if newline else ''
 
         justify = f' {self.justify.to_sexpr()}' if self.justify.to_sexpr() != '' else ''
-        hide = f' hide' if self.hide else ''
+        hide = f' (hide yes)' if self.hide else ''
         href = f' (href "{dequote(self.href)}")' if self.href is not None else ''
 
         expression =  f'{indents}(effects {self.font.to_sexpr()}{justify}{href}{hide}){endline}'
@@ -824,11 +827,16 @@ class Property():
     effects: Optional[Effects] = None
     """The optional ``effects`` section defines how the text is displayed"""
 
-    showName: bool = False
+    showName: Optional[bool] = None
     """The ``show_name`` token defines if the property name is visibly shown. Used for netclass
-    labels.
+    labels. None means the token was not present in the source file.
 
     Available since KiCad v7"""
+
+    doNotAutoplace: Optional[bool] = None
+    """The ``do_not_autoplace`` token defines if the property should not be auto-placed.
+
+    Available since KiCad v8"""
 
     @classmethod
     def from_sexpr(cls, exp: list) -> Property:
@@ -857,7 +865,16 @@ class Property():
             if item[0] == 'id': object.id = item[1]
             if item[0] == 'at': object.position = Position().from_sexpr(item)
             if item[0] == 'effects': object.effects = Effects().from_sexpr(item)
-            if item[0] == 'show_name': object.showName = True
+            if item[0] == 'show_name':
+                if len(item) > 1 and item[1] == 'no':
+                    object.showName = False
+                else:
+                    object.showName = True
+            if item[0] == 'do_not_autoplace':
+                if len(item) > 1 and item[1] == 'no':
+                    object.doNotAutoplace = False
+                else:
+                    object.doNotAutoplace = True
         return object
 
     def to_sexpr(self, indent: int = 4, newline: bool = True) -> str:
@@ -875,9 +892,16 @@ class Property():
 
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
         id = f' (id {self.id})' if self.id is not None else ''
-        sn = ' (show_name)' if self.showName else ''
+        if self.showName is not None:
+            sn = f' (show_name {"yes" if self.showName else "no"})'
+        else:
+            sn = ''
+        if self.doNotAutoplace is not None:
+            dnap = f' (do_not_autoplace {"yes" if self.doNotAutoplace else "no"})'
+        else:
+            dnap = ''
 
-        expression =  f'{indents}(property "{dequote(self.key)}" "{dequote(self.value)}"{id} (at {self.position.X} {self.position.Y}{posA}){sn}'
+        expression =  f'{indents}(property "{dequote(self.key)}" "{dequote(self.value)}"{id} (at {self.position.X} {self.position.Y}{posA}){sn}{dnap}'
         if self.effects is not None:
             expression += f'\n{self.effects.to_sexpr(indent+2)}'
             expression += f'{indents}){endline}'

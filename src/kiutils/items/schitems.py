@@ -435,6 +435,11 @@ class Text():
     text: str = ""
     """The ``text`` token defines the text string"""
 
+    excludeFromSim: Optional[bool] = None
+    """The optional ``exclude_from_sim`` token defines if the text is excluded from simulation.
+
+    Available since KiCad v8"""
+
     position: Position = field(default_factory=lambda: Position())
     """The ``position`` token defines the X and Y coordinates and rotation angle of the text"""
 
@@ -467,6 +472,7 @@ class Text():
         object = cls()
         object.text = exp[1]
         for item in exp[2:]:
+            if item[0] == 'exclude_from_sim': object.excludeFromSim = True if item[1] == 'yes' else False
             if item[0] == 'at': object.position = Position().from_sexpr(item)
             if item[0] == 'effects': object.effects = Effects().from_sexpr(item)
             if item[0] == 'uuid': object.uuid = item[1]
@@ -487,14 +493,14 @@ class Text():
 
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
 
-        expression =  f'{indents}(text "{dequote(self.text)}"'
+        expression =  f'{indents}(text "{dequote(self.text)}"\n'
+
+        if self.excludeFromSim is not None:
+            efs = 'yes' if self.excludeFromSim else 'no'
+            expression += f'{indents}  (exclude_from_sim {efs})\n'
 
         # Strings longer or equal than 50 chars have the position in the next line
-        if len(self.text) >= 50:
-            expression += f'\n{indents}  '
-        else:
-            expression += ' '
-        expression += f'(at {self.position.X} {self.position.Y}{posA})\n'
+        expression += f'{indents}  (at {self.position.X} {self.position.Y}{posA})\n'
         expression += self.effects.to_sexpr(indent+2)
         if self.uuid is not None:
             expression += f'{indents}  (uuid {self.uuid})\n'
@@ -513,11 +519,21 @@ class TextBox():
     text: str = ""
     """The ``text`` token defines the text string"""
 
+    excludeFromSim: Optional[bool] = None
+    """The optional ``exclude_from_sim`` token defines if the text box is excluded from simulation.
+
+    Available since KiCad v8"""
+
     position: Position = field(default_factory=lambda: Position())
     """The ``position`` token defines the X and Y coordinates and rotation angle of the text"""
 
     size: Position = field(default_factory=lambda: Position())
     """The ``size`` token defines the size in X and Y direction. Angle is not used."""
+
+    margins: Optional[List[float]] = None
+    """The optional ``margins`` token defines the text box margins [top, right, bottom, left].
+
+    Available since KiCad v9"""
 
     stroke: Stroke = field(default_factory=lambda: Stroke())
     """The ``stroke`` token defines the look of the outline of the text box"""
@@ -554,8 +570,10 @@ class TextBox():
         object = cls()
         object.text = exp[1]
         for item in exp[2:]:
+            if item[0] == 'exclude_from_sim': object.excludeFromSim = True if item[1] == 'yes' else False
             if item[0] == 'at': object.position = Position().from_sexpr(item)
             if item[0] == 'size': object.size = Position().from_sexpr(item)
+            if item[0] == 'margins': object.margins = [float(v) for v in item[1:]]
             if item[0] == 'effects': object.effects = Effects().from_sexpr(item)
             if item[0] == 'stroke': object.stroke = Stroke().from_sexpr(item)
             if item[0] == 'fill': object.fill = Fill().from_sexpr(item)
@@ -578,7 +596,13 @@ class TextBox():
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
 
         expression =  f'{indents}(text_box "{dequote(self.text)}"\n'
+        if self.excludeFromSim is not None:
+            efs = 'yes' if self.excludeFromSim else 'no'
+            expression += f'{indents}  (exclude_from_sim {efs})\n'
         expression += f'{indents}  (at {self.position.X} {self.position.Y}{posA}) (size {self.size.X} {self.size.Y})\n'
+        if self.margins is not None:
+            mvals = ' '.join(str(v) for v in self.margins)
+            expression += f'{indents}  (margins {mvals})\n'
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
         expression += self.effects.to_sexpr(indent+2)
@@ -654,7 +678,7 @@ class LocalLabel():
         endline = '\n' if newline else ''
 
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
-        fieldsAutoplaced = ' (fields_autoplaced)' if self.fieldsAutoplaced else ''
+        fieldsAutoplaced = ' (fields_autoplaced yes)' if self.fieldsAutoplaced else ''
 
         expression =  f'{indents}(label "{dequote(self.text)}" (at {self.position.X} {self.position.Y}{posA}){fieldsAutoplaced}\n'
         expression += self.effects.to_sexpr(indent+2)
@@ -740,7 +764,7 @@ class GlobalLabel():
         endline = '\n' if newline else ''
 
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
-        fa = ' (fields_autoplaced)' if self.fieldsAutoplaced else ''
+        fa = ' (fields_autoplaced yes)' if self.fieldsAutoplaced else ''
 
         expression =  f'{indents}(global_label "{dequote(self.text)}" (shape {self.shape}) (at {self.position.X} {self.position.Y}{posA}){fa}\n'
         expression += self.effects.to_sexpr(indent+2)
@@ -824,7 +848,7 @@ class HierarchicalLabel():
         endline = '\n' if newline else ''
 
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
-        fieldsAutoplaced = ' (fields_autoplaced)' if self.fieldsAutoplaced else ''
+        fieldsAutoplaced = ' (fields_autoplaced yes)' if self.fieldsAutoplaced else ''
 
         expression =  f'{indents}(hierarchical_label "{dequote(self.text)}" (shape {self.shape}) (at {self.position.X} {self.position.Y}{posA}){fieldsAutoplaced}\n'
         expression += self.effects.to_sexpr(indent+2)
@@ -1029,9 +1053,14 @@ class SchematicSymbol():
     """The ``on_board`` token attribute determines if the footprint associated with the symbol is
     exported to the board via the netlist"""
 
+    excludeFromSim: Optional[bool] = None
+    """The optional ``exclude_from_sim`` token defines if the symbol is excluded from simulation.
+
+    Available since KiCad v8"""
+
     dnp: Optional[bool] = None
-    """The optional ``dnp`` token defines if a symbol is marked as do-not-populate in the schematic. 
-    
+    """The optional ``dnp`` token defines if a symbol is marked as do-not-populate in the schematic.
+
     Available since KiCad v7"""
 
     fieldsAutoplaced: bool = False
@@ -1086,6 +1115,7 @@ class SchematicSymbol():
             if item[0] == 'lib_name': object.libName = item[1]
             if item[0] == 'uuid': object.uuid = item[1]
             if item[0] == 'unit': object.unit = item[1]
+            if item[0] == 'exclude_from_sim': object.excludeFromSim = True if item[1] == 'yes' else False
             if item[0] == 'in_bom': object.inBom = True if item[1] == 'yes' else False
             if item[0] == 'on_board': object.onBoard = True if item[1] == 'yes' else False
             if item[0] == 'dnp': object.dnp = True if item[1] == 'yes' else False
@@ -1113,19 +1143,24 @@ class SchematicSymbol():
         endline = '\n' if newline else ''
 
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
-        fa = f' (fields_autoplaced)' if self.fieldsAutoplaced else ''
+        fa = f' (fields_autoplaced yes)' if self.fieldsAutoplaced else ''
         inBom = 'yes' if self.inBom else 'no'
         onBoard = 'yes' if self.onBoard else 'no'
         mirror = f' (mirror {self.mirror})' if self.mirror is not None else ''
         unit = f' (unit {self.unit})' if self.unit is not None else ''
         lib_name = f' (lib_name "{dequote(self.libName)}")' if self.libName is not None else ''
+        if self.excludeFromSim is not None:
+            efs = 'yes' if self.excludeFromSim else 'no'
+            excludeFromSim = f' (exclude_from_sim {efs})'
+        else:
+            excludeFromSim = ''
         if self.dnp is not None:
             dnp = ' (dnp yes)' if self.dnp else ' (dnp no)'
         else:
             dnp = ''
 
         expression =  f'{indents}(symbol{lib_name} (lib_id "{dequote(self.libId)}") (at {self.position.X} {self.position.Y}{posA}){mirror}{unit}\n'
-        expression += f'{indents}  (in_bom {inBom}) (on_board {onBoard}){dnp}{fa}\n'
+        expression += f'{indents} {excludeFromSim} (in_bom {inBom}) (on_board {onBoard}){dnp}{fa}\n'
         if self.uuid:
             expression += f'{indents}  (uuid {self.uuid})\n'
         for property in self.properties:
@@ -1211,9 +1246,9 @@ class HierarchicalPin():
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
 
         expression =  f'{indents}(pin "{dequote(self.name)}" {self.connectionType} (at {self.position.X} {self.position.Y}{posA})\n'
-        expression += self.effects.to_sexpr(indent+2)
         if self.uuid is not None:
             expression += f'{indents}  (uuid {self.uuid})\n'
+        expression += self.effects.to_sexpr(indent+2)
         expression += f'{indents}){endline}'
         return expression
 
@@ -1352,6 +1387,26 @@ class HierarchicalSheet():
     height: float = 0
     """The ``height`` token defines the height of the sheet"""
 
+    excludeFromSim: Optional[bool] = None
+    """The optional ``exclude_from_sim`` token defines if the sheet is excluded from simulation.
+
+    Available since KiCad v8"""
+
+    inBom: Optional[bool] = None
+    """The optional ``in_bom`` token defines if the sheet is included in the BOM.
+
+    Available since KiCad v8"""
+
+    onBoard: Optional[bool] = None
+    """The optional ``on_board`` token defines if the sheet is exported to the board.
+
+    Available since KiCad v8"""
+
+    dnp: Optional[bool] = None
+    """The optional ``dnp`` token defines if the sheet is do-not-populate.
+
+    Available since KiCad v8"""
+
     fieldsAutoplaced: bool = False
     """The ``fields_autoplaced`` is a flag that indicates that any PROPERTIES associated
        with the global label have been place automatically"""
@@ -1380,11 +1435,11 @@ class HierarchicalSheet():
     pins: List[HierarchicalPin] = field(default_factory=list)
     """The ``pins`` section is a list of hierarchical pins that map a hierarchical label defined in
        the associated schematic file"""
-    
+
     instances: List[HierarchicalSheetProjectInstance] = field(default_factory=list)
-    """The ``instances`` token defines a list of hierachical sheet instances grouped by project. 
+    """The ``instances`` token defines a list of hierachical sheet instances grouped by project.
     Every hierarchical sheet will have a least one instance.
-    
+
     Available since KiCad v7."""
 
     @classmethod
@@ -1411,6 +1466,10 @@ class HierarchicalSheet():
         for item in exp[1:]:
             if item[0] == 'fields_autoplaced': object.fieldsAutoplaced = True
             if item[0] == 'at': object.position = Position().from_sexpr(item)
+            if item[0] == 'exclude_from_sim': object.excludeFromSim = True if item[1] == 'yes' else False
+            if item[0] == 'in_bom': object.inBom = True if item[1] == 'yes' else False
+            if item[0] == 'on_board': object.onBoard = True if item[1] == 'yes' else False
+            if item[0] == 'dnp': object.dnp = True if item[1] == 'yes' else False
             if item[0] == 'stroke': object.stroke = Stroke().from_sexpr(item)
             if item[0] == 'size':
                 object.width = item[1]
@@ -1443,9 +1502,22 @@ class HierarchicalSheet():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        fa = ' (fields_autoplaced)' if self.fieldsAutoplaced else ''
+        fa = ' (fields_autoplaced yes)' if self.fieldsAutoplaced else ''
 
-        expression =  f'{indents}(sheet (at {self.position.X} {self.position.Y}) (size {self.width} {self.height}){fa}\n'
+        expression =  f'{indents}(sheet (at {self.position.X} {self.position.Y}) (size {self.width} {self.height})'
+        if self.excludeFromSim is not None:
+            efs = 'yes' if self.excludeFromSim else 'no'
+            expression += f' (exclude_from_sim {efs})'
+        if self.inBom is not None:
+            ib = 'yes' if self.inBom else 'no'
+            expression += f' (in_bom {ib})'
+        if self.onBoard is not None:
+            ob = 'yes' if self.onBoard else 'no'
+            expression += f' (on_board {ob})'
+        if self.dnp is not None:
+            d = 'yes' if self.dnp else 'no'
+            expression += f' (dnp {d})'
+        expression += f'{fa}\n'
         expression += self.stroke.to_sexpr(indent+2)
         expression += f'{indents}  (fill {self.fill.to_sexpr()})\n'
         if self.uuid is not None:
@@ -1907,7 +1979,7 @@ class NetclassFlag():
         endline = '\n' if newline else ''
 
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
-        fa = f' (fields_autoplaced)' if self.fieldsAutoplaced else ''
+        fa = f' (fields_autoplaced yes)' if self.fieldsAutoplaced else ''
 
         expression =  f'{indents}(netclass_flag "{dequote(self.text)}" (length {self.length}) (shape {self.shape}) (at {self.position.X} {self.position.Y}{posA}){fa}\n'
         expression += self.effects.to_sexpr(indent+2)
