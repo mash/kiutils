@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict
 
-from kiutils.utils.strings import dequote
+from kiutils.utils.strings import dequote, _fmt
 
 @dataclass
 class Position():
@@ -131,7 +131,7 @@ class Coordinate():
         """
         indents = ' '*indent
         endline = '\n' if newline else ''
-        return f'{indents}(xyz {self.X} {self.Y} {self.Z}){endline}'
+        return f'{indents}(xyz {_fmt(self.X)} {_fmt(self.Y)} {_fmt(self.Z)}){endline}'
 
 
 @dataclass
@@ -197,9 +197,9 @@ class ColorRGBA():
         if self.precision is not None:
             alpha = f'{self.A:.{self.precision}f}'
         else:
-            alpha = f'{self.A}'
+            alpha = f'{_fmt(self.A)}'
 
-        return f'{indents}(color {self.R} {self.G} {self.B} {alpha}){endline}'
+        return f'{indents}(color {_fmt(self.R)} {_fmt(self.G)} {_fmt(self.B)} {alpha}){endline}'
 
 @dataclass
 class Stroke():
@@ -265,7 +265,7 @@ class Stroke():
         endline = '\n' if newline else ''
         color = f' {self.color.to_sexpr()}' if self.color is not None else ''
         the_type = f' (type {self.type})' if self.type is not None else ''
-        return f'{indents}(stroke (width {self.width}){the_type}{color}){endline}'
+        return f'{indents}(stroke (width {_fmt(self.width)}){the_type}{color}){endline}'
 
 
 
@@ -356,13 +356,13 @@ class Font():
         face_name, thickness, bold, italic, linespacing, color = '', '', '', '', '', ''
 
         if self.face is not None:        face_name = f'(face "{dequote(self.face)}") '
-        if self.thickness is not None:   thickness = f' (thickness {self.thickness})'
+        if self.thickness is not None:   thickness = f' (thickness {_fmt(self.thickness)})'
         if self.bold == True:            bold = ' (bold yes)'
         if self.italic == True:          italic = ' (italic yes)'
-        if self.lineSpacing is not None: linespacing = f' (line_spacing {self.lineSpacing})'
+        if self.lineSpacing is not None: linespacing = f' (line_spacing {_fmt(self.lineSpacing)})'
         if self.color is not None:       color = f' {self.color.to_sexpr()}'
 
-        expression = f'{indents}(font {face_name}(size {self.height} {self.width}){color}{thickness}{bold}{italic}{linespacing}){endline}'
+        expression = f'{indents}(font {face_name}(size {_fmt(self.height)} {_fmt(self.width)}){color}{thickness}{bold}{italic}{linespacing}){endline}'
         return expression
 
 @dataclass
@@ -713,8 +713,8 @@ class PageSettings():
         if self.paperSize == 'User':
             if self.width is None or self.height is None:
                 raise Exception("Page size set to 'User' but width or height not specified")
-            width = f' {self.width}'
-            height = f' {self.height}'
+            width = f' {_fmt(self.width)}'
+            height = f' {_fmt(self.height)}'
         return f'{indents}(paper "{dequote(self.paperSize)}"{width}{height}{portrait}){endline}'
 
 @dataclass
@@ -890,7 +890,7 @@ class Property():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        posA = f' {self.position.angle}' if self.position.angle is not None else ''
+        posA = f' {_fmt(self.position.angle)}' if self.position.angle is not None else ''
         id = f' (id {self.id})' if self.id is not None else ''
         if self.showName is not None:
             sn = f' (show_name {"yes" if self.showName else "no"})'
@@ -901,7 +901,7 @@ class Property():
         else:
             dnap = ''
 
-        expression =  f'{indents}(property "{dequote(self.key)}" "{dequote(self.value)}"{id} (at {self.position.X} {self.position.Y}{posA}){sn}{dnap}'
+        expression =  f'{indents}(property "{dequote(self.key)}" "{dequote(self.value)}"{id} (at {_fmt(self.position.X)} {_fmt(self.position.Y)}{posA}){sn}{dnap}'
         if self.effects is not None:
             expression += f'\n{self.effects.to_sexpr(indent+2)}'
             expression += f'{indents}){endline}'
@@ -966,7 +966,7 @@ class RenderCachePolygon():
             if i % 4 == 0:
                 expression += f'\n'
             expression += f'{indents}    '
-            expression += f'(xy {point.X} {point.Y})'
+            expression += f'(xy {_fmt(point.X)} {_fmt(point.Y)})'
 
         # NOTE: This expects the length of the points array to be a multiple of four to get the
         #       formatting right.
@@ -1171,10 +1171,10 @@ class Image():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        scale = f' (scale {self.scale})' if self.scale is not None else ''
+        scale = f' (scale {_fmt(self.scale)})' if self.scale is not None else ''
         layer = f' (layer "{dequote(self.layer)}")' if self.layer is not None else ''
 
-        expression =  f'{indents}(image (at {self.position.X} {self.position.Y}){layer}{scale}\n'
+        expression =  f'{indents}(image (at {_fmt(self.position.X)} {_fmt(self.position.Y)}){layer}{scale}\n'
         if self.uuid is not None:
             expression += f'{indents}  (uuid {self.uuid})\n'
         expression += f'{indents}  (data\n'

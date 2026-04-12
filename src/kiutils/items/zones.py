@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List
 
 from kiutils.items.common import Position
-from kiutils.utils.strings import dequote
+from kiutils.utils.strings import dequote, _fmt
 
 @dataclass
 class KeepoutSettings():
@@ -238,18 +238,18 @@ class FillSettings():
         yes = ' yes' if self.yes else ''
         mode = f' (mode {self.mode})' if self.mode is not None else ''
         smoothing = f' (smoothing {self.smoothingStyle})' if self.smoothingStyle is not None else ''
-        radius = f' (radius {self.smoothingRadius})' if self.smoothingRadius is not None else ''
+        radius = f' (radius {_fmt(self.smoothingRadius)})' if self.smoothingRadius is not None else ''
         irm = f' (island_removal_mode {self.islandRemovalMode})' if self.islandRemovalMode is not None else ''
-        iam = f' (island_area_min {self.islandAreaMin})' if self.islandAreaMin is not None else ''
-        ht = f'\n{indents}  (hatch_thickness {self.hatchThickness})' if self.hatchThickness is not None else ''
-        hg = f' (hatch_gap {self.hatchGap})' if self.hatchGap is not None else ''
-        ho = f' (hatch_orientation {self.hatchOrientation})' if self.hatchOrientation is not None else ''
-        hsl = f'\n{indents}  (hatch_smoothing_level {self.hatchSmoothingLevel})' if self.hatchSmoothingLevel is not None else ''
-        hsv = f' (hatch_smoothing_value {self.hatchSmoothingValue})' if self.hatchSmoothingValue is not None else ''
-        hba = f'\n{indents}  (hatch_border_algorithm {self.hatchBorderAlgorithm})' if self.hatchBorderAlgorithm is not None else ''
-        hmha = f' (hatch_min_hole_area {self.hatchMinHoleArea})' if self.hatchMinHoleArea is not None else ''
+        iam = f' (island_area_min {_fmt(self.islandAreaMin)})' if self.islandAreaMin is not None else ''
+        ht = f'\n{indents}  (hatch_thickness {_fmt(self.hatchThickness)})' if self.hatchThickness is not None else ''
+        hg = f' (hatch_gap {_fmt(self.hatchGap)})' if self.hatchGap is not None else ''
+        ho = f' (hatch_orientation {_fmt(self.hatchOrientation)})' if self.hatchOrientation is not None else ''
+        hsl = f'\n{indents}  (hatch_smoothing_level {_fmt(self.hatchSmoothingLevel)})' if self.hatchSmoothingLevel is not None else ''
+        hsv = f' (hatch_smoothing_value {_fmt(self.hatchSmoothingValue)})' if self.hatchSmoothingValue is not None else ''
+        hba = f'\n{indents}  (hatch_border_algorithm {_fmt(self.hatchBorderAlgorithm)})' if self.hatchBorderAlgorithm is not None else ''
+        hmha = f' (hatch_min_hole_area {_fmt(self.hatchMinHoleArea)})' if self.hatchMinHoleArea is not None else ''
 
-        return f'{indents}(fill{yes}{mode} (thermal_gap {self.thermalGap}) (thermal_bridge_width {self.thermalBridgeWidth}){smoothing}{radius}{irm}{iam}{ht}{hg}{ho}{hsl}{hsv}{hba}{hmha}){endline}'
+        return f'{indents}(fill{yes}{mode} (thermal_gap {_fmt(self.thermalGap)}) (thermal_bridge_width {_fmt(self.thermalBridgeWidth)}){smoothing}{radius}{irm}{iam}{ht}{hg}{ho}{hsl}{hsv}{hba}{hmha}){endline}'
 
 @dataclass
 class ZonePolygon():
@@ -308,7 +308,7 @@ class ZonePolygon():
         expression =  f'{indents}(polygon\n'
         expression += f'{indents}  (pts\n'
         for point in self.coordinates:
-            expression += f'{indents}    (xy {point.X} {point.Y})\n'
+            expression += f'{indents}    (xy {_fmt(point.X)} {_fmt(point.Y)})\n'
         expression += f'{indents}  )\n'
         expression += f'{indents})\n'
         return expression
@@ -387,7 +387,7 @@ class FilledPolygon():
             expression += f'{indents}  (island)\n'
         expression += f'{indents}  (pts\n'
         for point in self.coordinates:
-            expression += f'{indents}    (xy {point.X} {point.Y})\n'
+            expression += f'{indents}    (xy {_fmt(point.X)} {_fmt(point.Y)})\n'
         expression += f'{indents}  )\n'
         expression += f'{indents})\n'
         return expression
@@ -461,7 +461,7 @@ class FillSegments():
         expression += f'{indents}  (layer "{dequote(self.layer)}")\n'
         expression += f'{indents}  (pts\n'
         for point in self.coordinates:
-            expression += f'{indents}    (xy {point.X} {point.Y})\n'
+            expression += f'{indents}    (xy {_fmt(point.X)} {_fmt(point.Y)})\n'
         expression += f'{indents}  )\n'
         expression += f'{indents})\n'
         return expression
@@ -634,11 +634,11 @@ class Zone():
         else:
             layer_token = f' (layers{layers})'
 
-        expression =  f'{indents}(zone{locked} (net {self.net}) (net_name "{dequote(self.netName)}"){layer_token}{tstamp}{name} (hatch {self.hatch.style} {self.hatch.pitch})\n'
+        expression =  f'{indents}(zone{locked} (net {self.net}) (net_name "{dequote(self.netName)}"){layer_token}{tstamp}{name} (hatch {self.hatch.style} {_fmt(self.hatch.pitch)})\n'
         if self.priority is not None:
             expression += f'{indents}  (priority {self.priority})\n'
-        expression += f'{indents}  (connect_pads{contype} (clearance {self.clearance}))\n'
-        expression += f'{indents}  (min_thickness {self.minThickness}){fat}\n'
+        expression += f'{indents}  (connect_pads{contype} (clearance {_fmt(self.clearance)}))\n'
+        expression += f'{indents}  (min_thickness {_fmt(self.minThickness)}){fat}\n'
         if self.keepoutSettings is not None:
             expression += f'{indents}  {self.keepoutSettings.to_sexpr()}\n'
         if self.fillSettings is not None:

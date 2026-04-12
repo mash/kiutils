@@ -173,7 +173,7 @@
       (useauxorigin no)
       (hpglpennumber 1)
       (hpglpenspeed 20)
-      (hpglpendiameter 15.000000)
+      (hpglpendiameter 15)
       (dxfpolygonmode yes)
       (dxfimperialunits yes)
       (dxfusepcbnewfont yes)

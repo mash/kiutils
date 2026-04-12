@@ -130,7 +130,7 @@
     (property "Property2" "This is another property featuring \"quoted\" strings" (id 5) (at 130.81 91.44 0)
       (effects (font (size 1.27 1.27)) (hide yes))
     )
-    (property "Property3" "I was added from \"outside\" of KiCad" (id 6) (at 0.0 0.0 0))
+    (property "Property3" "I was added from \"outside\" of KiCad" (id 6) (at 0 0 0))
     (pin "1" (uuid 28f921ab-5f55-47f8-b726-02e567145cd5))
     (pin "2" (uuid e89e5b16-554a-4d97-8f95-fc89c9b40d74))
   )

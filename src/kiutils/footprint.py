@@ -27,7 +27,7 @@ from kiutils.items.common import Image, Position, Coordinate, Net, Group, Font
 from kiutils.items.fpitems import *
 from kiutils.items.gritems import *
 from kiutils.utils import sexpr
-from kiutils.utils.strings import dequote, remove_prefix
+from kiutils.utils.strings import dequote, remove_prefix, _fmt
 from kiutils.misc.config import KIUTILS_CREATE_NEW_VERSION_STR
 
 @dataclass
@@ -210,7 +210,7 @@ class Model():
 
         expression =  f'{indents}(model "{dequote(self.path)}"{hide}\n'
         if self.opacity is not None:
-            expression += f'{indents}  (opacity {self.opacity})\n'
+            expression += f'{indents}  (opacity {_fmt(self.opacity)})\n'
         expression += f'{indents}  (offset {self.pos.to_sexpr()})\n'
         expression += f'{indents}  (scale {self.scale.to_sexpr()})\n'
         expression += f'{indents}  (rotate {self.rotate.to_sexpr()})\n'
@@ -288,10 +288,10 @@ class DrillDefinition():
         endline = '\n' if newline else ''
 
         oval = f' oval' if self.oval else ''
-        width = f' {self.width}' if self.oval and self.width is not None else ''
-        offset = f' (offset {self.offset.X} {self.offset.Y})' if self.offset is not None else ''
+        width = f' {_fmt(self.width)}' if self.oval and self.width is not None else ''
+        offset = f' (offset {_fmt(self.offset.X)} {_fmt(self.offset.Y)})' if self.offset is not None else ''
 
-        return f'{indents}(drill{oval} {self.diameter}{width}{offset}){endline}'
+        return f'{indents}(drill{oval} {_fmt(self.diameter)}{width}{offset}){endline}'
 
 @dataclass
 class PadOptions():
@@ -579,7 +579,7 @@ class Pad():
         ppty = f' (property {self.property})' if self.property is not None else ''
         rul = ' (remove_unused_layers)' if self.removeUnusedLayers else ''
         kel = ' (keep_end_layers)' if self.keepEndLayers else ''
-        rrr = f' (roundrect_rratio {self.roundrectRatio})' if self.roundrectRatio is not None else ''
+        rrr = f' (roundrect_rratio {_fmt(self.roundrectRatio)})' if self.roundrectRatio is not None else ''
 
         net = f' {self.net.to_sexpr()}' if self.net is not None else ''
         pf = f' (pinfunction "{dequote(self.pinFunction)}")' if self.pinFunction is not None else ''
@@ -600,48 +600,48 @@ class Pad():
             c += ')'
         if self.chamferRatio is not None:
             champferFound = True
-            cr = f' (chamfer_ratio {self.chamferRatio})'
+            cr = f' (chamfer_ratio {_fmt(self.chamferRatio)})'
 
         if self.position.angle is not None:
-            position = f'(at {self.position.X} {self.position.Y} {self.position.angle})'
+            position = f'(at {_fmt(self.position.X)} {_fmt(self.position.Y)} {_fmt(self.position.angle)})'
         else:
-            position = f'(at {self.position.X} {self.position.Y})'
+            position = f'(at {_fmt(self.position.X)} {_fmt(self.position.Y)})'
 
         if self.solderMaskMargin is not None:
             marginFound = True
-            smm = f' (solder_mask_margin {self.solderMaskMargin})'
+            smm = f' (solder_mask_margin {_fmt(self.solderMaskMargin)})'
 
         if self.solderPasteMargin is not None:
             marginFound = True
-            spm = f' (solder_paste_margin {self.solderPasteMargin})'
+            spm = f' (solder_paste_margin {_fmt(self.solderPasteMargin)})'
 
         if self.solderPasteMarginRatio is not None:
             marginFound = True
-            spmr = f' (solder_paste_margin_ratio {self.solderPasteMarginRatio})'
+            spmr = f' (solder_paste_margin_ratio {_fmt(self.solderPasteMarginRatio)})'
 
         if self.clearance is not None:
             marginFound = True
-            cl = f' (clearance {self.clearance})'
+            cl = f' (clearance {_fmt(self.clearance)})'
 
         if self.zoneConnect is not None:
             marginFound = True
-            zc = f' (zone_connect {self.zoneConnect})'
+            zc = f' (zone_connect {_fmt(self.zoneConnect)})'
 
         if self.thermalWidth is not None:
             marginFound = True
-            tw = f' (thermal_width {self.thermalWidth})'
+            tw = f' (thermal_width {_fmt(self.thermalWidth)})'
 
         if self.thermalGap is not None:
             marginFound = True
-            tg = f' (thermal_gap {self.thermalGap})'
+            tg = f' (thermal_gap {_fmt(self.thermalGap)})'
 
-        expression =  f'{indents}(pad "{dequote(str(self.number))}" {self.type} {self.shape}{locked} {position} (size {self.size.X} {self.size.Y}){drill}{ppty}{layers}{rul}{kel}{rrr}'
+        expression =  f'{indents}(pad "{dequote(str(self.number))}" {self.type} {self.shape}{locked} {position} (size {_fmt(self.size.X)} {_fmt(self.size.Y)}){drill}{ppty}{layers}{rul}{kel}{rrr}'
         if champferFound:
             # Only one whitespace here as all temporary strings have at least one leading whitespace
             expression += f'\n{indents} {cr}{c}'
 
         if self.dieLength is not None:
-            expression += f'\n{indents}  (die_length {self.dieLength})'
+            expression += f'\n{indents}  (die_length {_fmt(self.dieLength)})'
 
         if marginFound or schematicSymbolAssociated:
             # Only one whitespace here as all temporary strings have at least one leading whitespace
@@ -1034,8 +1034,8 @@ class Footprint():
         expression += f'{indents}  (tedit {self.tedit}){tstamp}\n'
 
         if self.position is not None:
-            angle = f' {self.position.angle}' if self.position.angle is not None else ''
-            expression += f'{indents}  (at {self.position.X} {self.position.Y}{angle})\n'
+            angle = f' {_fmt(self.position.angle)}' if self.position.angle is not None else ''
+            expression += f'{indents}  (at {_fmt(self.position.X)} {_fmt(self.position.Y)}{angle})\n'
         if self.description is not None:
             expression += f'{indents}  (descr "{dequote(self.description)}")\n'
         if self.tags is not None:
@@ -1051,19 +1051,19 @@ class Footprint():
         if self.autoplaceCost180 is not None:
             expression += f'{indents}  (autoplace_cost180 {self.autoplaceCost180})\n'
         if self.solderMaskMargin is not None:
-            expression += f'{indents}  (solder_mask_margin {self.solderMaskMargin})\n'
+            expression += f'{indents}  (solder_mask_margin {_fmt(self.solderMaskMargin)})\n'
         if self.solderPasteMargin is not None:
-            expression += f'{indents}  (solder_paste_margin {self.solderPasteMargin})\n'
+            expression += f'{indents}  (solder_paste_margin {_fmt(self.solderPasteMargin)})\n'
         if self.solderPasteRatio is not None:
-            expression += f'{indents}  (solder_paste_ratio {self.solderPasteRatio})\n'
+            expression += f'{indents}  (solder_paste_ratio {_fmt(self.solderPasteRatio)})\n'
         if self.clearance is not None:
-            expression += f'{indents}  (clearance {self.clearance})\n'
+            expression += f'{indents}  (clearance {_fmt(self.clearance)})\n'
         if self.zoneConnect is not None:
-            expression += f'{indents}  (zone_connect {self.zoneConnect})\n'
+            expression += f'{indents}  (zone_connect {_fmt(self.zoneConnect)})\n'
         if self.thermalWidth is not None:
-            expression += f'{indents}  (thermal_width {self.thermalWidth})\n'
+            expression += f'{indents}  (thermal_width {_fmt(self.thermalWidth)})\n'
         if self.thermalGap is not None:
-            expression += f'{indents}  (thermal_gap {self.thermalGap})\n'
+            expression += f'{indents}  (thermal_gap {_fmt(self.thermalGap)})\n'
 
         if self.attributes is not None:
             # Note: If the attribute object has only standard values in it, it will return an

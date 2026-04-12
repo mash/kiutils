@@ -22,7 +22,7 @@ import re
 from kiutils.items.common import Effects, Position, Property, Font
 from kiutils.items.syitems import *
 from kiutils.utils import sexpr
-from kiutils.utils.strings import dequote
+from kiutils.utils.strings import dequote, _fmt
 from kiutils.misc.config import KIUTILS_CREATE_NEW_VERSION_STR
 
 @dataclass
@@ -178,11 +178,11 @@ class SymbolPin():
         newLineAdded = False
 
         hide = ' (hide yes)' if self.hide else ''
-        posA = f' {self.position.angle}' if self.position.angle is not None else ''
+        posA = f' {_fmt(self.position.angle)}' if self.position.angle is not None else ''
         nameEffects = f' {self.nameEffects.to_sexpr(newline=False)}' if self.nameEffects is not None else ''
         numberEffects = f' {self.numberEffects.to_sexpr(newline=False)}' if self.numberEffects is not None else ''
 
-        expression =  f'{indents}(pin {self.electricalType} {self.graphicalStyle} (at {self.position.X} {self.position.Y}{posA}) (length {self.length}){hide}'
+        expression =  f'{indents}(pin {self.electricalType} {self.graphicalStyle} (at {_fmt(self.position.X)} {_fmt(self.position.Y)}{posA}) (length {_fmt(self.length)}){hide}'
         
         # Since KiCad v7 nightly: Missing name and number effects print both other tokens into 
         # the same line.
@@ -484,7 +484,7 @@ class Symbol():
         onboard = f' (on_board {obtext})' if self.onBoard is not None else ''
         power = f' (power)' if self.isPower else ''
         if self.pinNames:
-            pnoffset = f'\n{indents}    (offset {self.pinNamesOffset})' if self.pinNamesOffset is not None else ''
+            pnoffset = f'\n{indents}    (offset {_fmt(self.pinNamesOffset)})' if self.pinNamesOffset is not None else ''
             pnhide = f'\n{indents}    (hide yes)' if self.pinNamesHide else ''
             pinnames = f'\n{indents}  (pin_names{pnoffset}{pnhide}\n{indents}  )'
         else:

@@ -38,7 +38,7 @@
   )
 
   (setup
-    (pad_to_mask_clearance 0.0)
+    (pad_to_mask_clearance 0)
   )
 
   (net 0 "")

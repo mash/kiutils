@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List
 
 from kiutils.items.common import Position
-from kiutils.utils.strings import dequote
+from kiutils.utils.strings import dequote, _fmt
 
 @dataclass
 class GeneralSettings():
@@ -75,7 +75,7 @@ class GeneralSettings():
         endline = '\n' if newline else ''
 
         expression =  f'{indents}(general\n'
-        expression += f'{indents}  (thickness {self.thickness})\n'
+        expression += f'{indents}  (thickness {_fmt(self.thickness)})\n'
         if self.legacyTeardrops is not None:
             lt = 'yes' if self.legacyTeardrops else 'no'
             expression += f'{indents}  (legacy_teardrops {lt})\n'
@@ -189,10 +189,10 @@ class StackupSubLayer():
         endline = '\n' if newline else ''
 
         mat = f' (material "{dequote(self.material)}")' if self.material is not None else ''
-        er = f' (epsilon_r {self.epsilonR})' if self.epsilonR is not None else ''
-        lt = f' (loss_tangent {self.lossTangent})' if self.lossTangent is not None else ''
+        er = f' (epsilon_r {_fmt(self.epsilonR)})' if self.epsilonR is not None else ''
+        lt = f' (loss_tangent {_fmt(self.lossTangent)})' if self.lossTangent is not None else ''
 
-        return f'{indents}addsublayer (thickness {self.thickness}){mat}{er}{lt}{endline}'
+        return f'{indents}addsublayer (thickness {_fmt(self.thickness)}){mat}{er}{lt}{endline}'
 
 
 @dataclass
@@ -311,9 +311,9 @@ class StackupLayer():
 
         color = f' (color "{dequote(self.color)}")' if self.color is not None else ''
         material = f' (material "{dequote(self.material)}")' if self.material is not None else ''
-        thickness = f' (thickness {self.thickness})' if self.thickness is not None else ''
-        epsilon_r = f' (epsilon_r {self.epsilonR})' if self.epsilonR is not None else ''
-        loss_tangent = f' (loss_tangent {self.lossTangent})' if self.lossTangent is not None else ''
+        thickness = f' (thickness {_fmt(self.thickness)})' if self.thickness is not None else ''
+        epsilon_r = f' (epsilon_r {_fmt(self.epsilonR)})' if self.epsilonR is not None else ''
+        loss_tangent = f' (loss_tangent {_fmt(self.lossTangent)})' if self.lossTangent is not None else ''
 
         expression = f'{indents}(layer "{dequote(self.name)}" (type "{self.type}"){color}{thickness}'
         expression +=f'{material}{epsilon_r}{loss_tangent}'
@@ -675,9 +675,9 @@ class PlotSettings():
         expression += f'{indents}  (usegerberadvancedattributes {_yn(self.useGerberAdvancedAttributes)})\n'
         expression += f'{indents}  (creategerberjobfile {_yn(self.createGerberJobFile)})\n'
         if self.dashedLineDashRatio is not None:
-            expression += f'{indents}  (dashed_line_dash_ratio {float(self.dashedLineDashRatio):.6f})\n'
+            expression += f'{indents}  (dashed_line_dash_ratio {_fmt(self.dashedLineDashRatio)})\n'
         if self.dashedLineGapRatio is not None:
-            expression += f'{indents}  (dashed_line_gap_ratio {float(self.dashedLineGapRatio):.6f})\n'
+            expression += f'{indents}  (dashed_line_gap_ratio {_fmt(self.dashedLineGapRatio)})\n'
         if self.svgUseInch is not None:
             expression += f'{indents}  (svguseinch {_yn(self.svgUseInch)})\n'
         expression += f'{indents}  (svgprecision {self.svgPrecision})\n'
@@ -701,7 +701,7 @@ class PlotSettings():
         if self.hpglPenSpeed is not None:
             expression += f'{indents}  (hpglpenspeed {self.hpglPenSpeed})\n'
         if self.hpglPenDiameter is not None:
-            expression += f'{indents}  (hpglpendiameter {float(self.hpglPenDiameter):.6f})\n'
+            expression += f'{indents}  (hpglpendiameter {_fmt(self.hpglPenDiameter)})\n'
         expression += f'{indents}  (dxfpolygonmode {_yn(self.dxfPolygonMode)})\n'
         expression += f'{indents}  (dxfimperialunits {_yn(self.dxfImperialUnits)})\n'
         expression += f'{indents}  (dxfusepcbnewfont {_yn(self.dxfUsePcbnewFont)})\n'
@@ -871,12 +871,12 @@ class SetupData():
 
         expression =  f'{indents}(setup\n'
         if self.stackup is not None:                  expression += self.stackup.to_sexpr(indent+2)
-        expression += f'{indents}  (pad_to_mask_clearance {self.packToMaskClearance})\n'
-        if self.solderMaskMinWidth is not None:       expression += f'{indents}  (solder_mask_min_width {self.solderMaskMinWidth})\n'
-        if self.padToPasteClearance is not None:      expression += f'{indents}  (pad_to_paste_clearance {self.padToPasteClearance})\n'
-        if self.padToPasteClearanceRatio is not None: expression += f'{indents}  (pad_to_paste_clearance_ratio {self.padToPasteClearanceRatio})\n'
-        if self.auxAxisOrigin is not None:            expression += f'{indents}  (aux_axis_origin {self.auxAxisOrigin.X} {self.auxAxisOrigin.Y})\n'
-        if self.gridOrigin is not None:               expression += f'{indents}  (grid_origin {self.gridOrigin.X} {self.gridOrigin.Y})\n'
+        expression += f'{indents}  (pad_to_mask_clearance {_fmt(self.packToMaskClearance)})\n'
+        if self.solderMaskMinWidth is not None:       expression += f'{indents}  (solder_mask_min_width {_fmt(self.solderMaskMinWidth)})\n'
+        if self.padToPasteClearance is not None:      expression += f'{indents}  (pad_to_paste_clearance {_fmt(self.padToPasteClearance)})\n'
+        if self.padToPasteClearanceRatio is not None: expression += f'{indents}  (pad_to_paste_clearance_ratio {_fmt(self.padToPasteClearanceRatio)})\n'
+        if self.auxAxisOrigin is not None:            expression += f'{indents}  (aux_axis_origin {_fmt(self.auxAxisOrigin.X)} {_fmt(self.auxAxisOrigin.Y)})\n'
+        if self.gridOrigin is not None:               expression += f'{indents}  (grid_origin {_fmt(self.gridOrigin.X)} {_fmt(self.gridOrigin.Y)})\n'
         _yn = lambda v: 'yes' if v else 'no'
         if self.allowSoldermaskBridgesInFootprints is not None:
             expression += f'{indents}  (allow_soldermask_bridges_in_footprints {_yn(self.allowSoldermaskBridgesInFootprints)})\n'
@@ -987,7 +987,7 @@ class Segment():
         endline = '\n' if newline else ''
         locked = ' locked' if self.locked else ''
 
-        return f'{indents}(segment{locked} (start {self.start.X} {self.start.Y}) (end {self.end.X} {self.end.Y}) (width {self.width}) (layer "{dequote(self.layer)}") (net {self.net}) (tstamp {self.tstamp})){endline}'
+        return f'{indents}(segment{locked} (start {_fmt(self.start.X)} {_fmt(self.start.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}) (width {_fmt(self.width)}) (layer "{dequote(self.layer)}") (net {self.net}) (tstamp {self.tstamp})){endline}'
 
 @dataclass
 class Via():
@@ -1096,7 +1096,7 @@ class Via():
         free = f' (free)' if self.free else ''
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
 
-        return f'{indents}(via{type}{locked} (at {self.position.X} {self.position.Y}) (size {self.size}) (drill {self.drill}) (layers{layers}){rum}{kel}{free} (net {self.net}){tstamp}){endline}'
+        return f'{indents}(via{type}{locked} (at {_fmt(self.position.X)} {_fmt(self.position.Y)}) (size {_fmt(self.size)}) (drill {_fmt(self.drill)}) (layers{layers}){rum}{kel}{free} (net {self.net}){tstamp}){endline}'
 
 @dataclass
 class Arc():
@@ -1182,9 +1182,9 @@ class Arc():
         locked = f' locked' if self.locked else ''
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
 
-        expression = f'{indents}(arc{locked} (start {self.start.X} {self.start.Y}) '
-        expression += f'(mid {self.mid.X} {self.mid.Y}) (end {self.end.X} {self.end.Y}) '
-        expression += f'(width {self.width}) (layer "{dequote(self.layer)}") '
+        expression = f'{indents}(arc{locked} (start {_fmt(self.start.X)} {_fmt(self.start.Y)}) '
+        expression += f'(mid {_fmt(self.mid.X)} {_fmt(self.mid.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}) '
+        expression += f'(width {_fmt(self.width)}) (layer "{dequote(self.layer)}") '
         expression += f'(net {self.net}){tstamp}){endline}'
         return expression
 
@@ -1258,4 +1258,4 @@ class Target():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        return f'{indents}(target {self.type} (at {self.position.X} {self.position.Y}) (size {self.size}) (width {self.width}) (layer "{self.layer}") (tstamp {self.tstamp})){endline}'
+        return f'{indents}(target {self.type} (at {_fmt(self.position.X)} {_fmt(self.position.Y)}) (size {_fmt(self.size)}) (width {_fmt(self.width)}) (layer "{self.layer}") (tstamp {self.tstamp})){endline}'

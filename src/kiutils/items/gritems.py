@@ -21,7 +21,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List
 
 from kiutils.items.common import Effects, Position, RenderCache, Stroke
-from kiutils.utils.strings import dequote
+from kiutils.utils.strings import dequote, _fmt
 
 @dataclass
 class GrText():
@@ -117,13 +117,13 @@ class GrText():
         endline = '\n' if newline else ''
 
         ko = ' knockout' if self.knockout else ''
-        posA = f' {self.position.angle}' if self.position.angle is not None else ''
+        posA = f' {_fmt(self.position.angle)}' if self.position.angle is not None else ''
         layer =  f' (layer "{dequote(self.layer)}"{ko})' if self.layer is not None else ''
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
         uuid = f'\n{indents}  (uuid "{dequote(self.uuid)}")' if self.uuid is not None else ''
         locked = f' locked' if self.locked else ''
 
-        expression =  f'{indents}(gr_text{locked} "{dequote(self.text)}" (at {self.position.X} {self.position.Y}{posA}){layer}{tstamp}{uuid}\n'
+        expression =  f'{indents}(gr_text{locked} "{dequote(self.text)}" (at {_fmt(self.position.X)} {_fmt(self.position.Y)}{posA}){layer}{tstamp}{uuid}\n'
         expression += f'{indents}  {self.effects.to_sexpr()}'
         if self.renderCache is not None:
             expression += self.renderCache.to_sexpr(indent+2)
@@ -259,15 +259,15 @@ class GrTextBox():
         endline = '\n' if newline else ''
 
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
-        angle = f'(angle {self.angle}) ' if self.angle is not None else ''
-        start = f'(start {self.start.X} {self.start.Y}) ' if self.start is not None else ''
-        end = f'(end {self.end.X} {self.end.Y}) ' if self.end is not None else ''
+        angle = f'(angle {_fmt(self.angle)}) ' if self.angle is not None else ''
+        start = f'(start {_fmt(self.start.X)} {_fmt(self.start.Y)}) ' if self.start is not None else ''
+        end = f'(end {_fmt(self.end.X)} {_fmt(self.end.Y)}) ' if self.end is not None else ''
         locked = ' locked' if self.locked else ''
 
         expression = f'{indents}(gr_text_box{locked} "{dequote(self.text)}"\n'
         if len(self.pts) == 4:
             expression += f'{indents}  (pts\n'
-            expression += f'{indents}    (xy {self.pts[0].X} {self.pts[0].Y})        (xy {self.pts[1].X} {self.pts[1].Y})        (xy {self.pts[2].X} {self.pts[2].Y})        (xy {self.pts[3].X} {self.pts[3].Y})\n'
+            expression += f'{indents}    (xy {_fmt(self.pts[0].X)} {_fmt(self.pts[0].Y)})        (xy {_fmt(self.pts[1].X)} {_fmt(self.pts[1].Y)})        (xy {_fmt(self.pts[2].X)} {_fmt(self.pts[2].Y)})        (xy {_fmt(self.pts[3].X)} {_fmt(self.pts[3].Y)})\n'
             expression += f'{indents}  )\n'
         expression += f'{indents}  {start}{end}{angle}(layer "{dequote(self.layer)}"){tstamp}\n'
         if self.effects is not None:
@@ -356,9 +356,9 @@ class GrLine():
 
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
         layer =  f' (layer "{dequote(self.layer)}")' if self.layer is not None else ''
-        angle = f' (angle {self.angle}' if self.angle is not None else ''
+        angle = f' (angle {_fmt(self.angle)}' if self.angle is not None else ''
 
-        return f'{indents}(gr_line{locked} (start {self.start.X} {self.start.Y}) (end {self.end.X} {self.end.Y}){angle}{layer} (width {self.width}){tstamp}){endline}'
+        return f'{indents}(gr_line{locked} (start {_fmt(self.start.X)} {_fmt(self.start.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}){angle}{layer} (width {_fmt(self.width)}){tstamp}){endline}'
 
 @dataclass
 class GrRect():
@@ -453,9 +453,9 @@ class GrRect():
         layer =  f' (layer "{dequote(self.layer)}")' if self.layer is not None else ''
         fill = f' (fill {self.fill})' if self.fill is not None else ''
         stroke = f'\n{indents}  {self.stroke.to_sexpr(indent=0, newline=False)}' if self.stroke is not None else ''
-        width = f' (width {self.width})' if self.stroke is None else ''
+        width = f' (width {_fmt(self.width)})' if self.stroke is None else ''
 
-        return f'{indents}(gr_rect{locked} (start {self.start.X} {self.start.Y}) (end {self.end.X} {self.end.Y}){layer}{stroke}{width}{fill}{tstamp}{uuid}){endline}'
+        return f'{indents}(gr_rect{locked} (start {_fmt(self.start.X)} {_fmt(self.start.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}){layer}{stroke}{width}{fill}{tstamp}{uuid}){endline}'
 
 @dataclass
 class GrCircle():
@@ -538,7 +538,7 @@ class GrCircle():
         layer =  f' (layer "{dequote(self.layer)}")' if self.layer is not None else ''
         fill = f' (fill {self.fill})' if self.fill is not None else ''
 
-        return f'{indents}(gr_circle{locked} (center {self.center.X} {self.center.Y}) (end {self.end.X} {self.end.Y}){layer} (width {self.width}){fill}{tstamp}){endline}'
+        return f'{indents}(gr_circle{locked} (center {_fmt(self.center.X)} {_fmt(self.center.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}){layer} (width {_fmt(self.width)}){fill}{tstamp}){endline}'
 
 @dataclass
 class GrArc():
@@ -620,7 +620,7 @@ class GrArc():
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
         layer =  f' (layer "{dequote(self.layer)}")' if self.layer is not None else ''
 
-        return f'{indents}(gr_arc{locked} (start {self.start.X} {self.start.Y}) (mid {self.mid.X} {self.mid.Y}) (end {self.end.X} {self.end.Y}){layer} (width {self.width}){tstamp}){endline}'
+        return f'{indents}(gr_arc{locked} (start {_fmt(self.start.X)} {_fmt(self.start.Y)}) (mid {_fmt(self.mid.X)} {_fmt(self.mid.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}){layer} (width {_fmt(self.width)}){tstamp}){endline}'
 
 @dataclass
 class GrPoly():
@@ -715,8 +715,8 @@ class GrPoly():
             expression =  f'{indents}(gr_poly{locked} (pts\n'
 
         for point in self.coordinates:
-            expression += f'{indents}    (xy {point.X} {point.Y})\n'
-        expression += f'{indents}  ){layer} (width {self.width}){fill}{tstamp}){endline}'
+            expression += f'{indents}    (xy {_fmt(point.X)} {_fmt(point.Y)})\n'
+        expression += f'{indents}  ){layer} (width {_fmt(self.width)}){fill}{tstamp}){endline}'
         return expression
 
 @dataclass
@@ -797,6 +797,6 @@ class GrCurve():
 
         expression = f'{indents}(gr_curve{locked} (pts\n'
         for point in self.coordinates:
-            expression += f'{indents}  (xy {point.X} {point.Y})\n'
-        expression += f'{indents}){layer} (width {self.width}){tstamp}){endline}'
+            expression += f'{indents}  (xy {_fmt(point.X)} {_fmt(point.Y)})\n'
+        expression += f'{indents}){layer} (width {_fmt(self.width)}){tstamp}){endline}'
         return expression

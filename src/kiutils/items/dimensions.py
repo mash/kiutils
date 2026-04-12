@@ -21,7 +21,7 @@ from typing import Optional, List
 
 from kiutils.items.common import Position
 from kiutils.items.gritems import GrText
-from kiutils.utils.strings import dequote
+from kiutils.utils.strings import dequote, _fmt
 
 @dataclass
 class DimensionFormat():
@@ -205,12 +205,12 @@ class DimensionStyle():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        extension_height = f' (extension_height {self.extensionHeight})' if self.extensionHeight is not None else ''
+        extension_height = f' (extension_height {_fmt(self.extensionHeight)})' if self.extensionHeight is not None else ''
         text_frame = f' (text_frame {self.textFrame})' if self.textFrame is not None else ''
-        extension_offset = f' (extension_offset {self.extensionOffset})' if self.extensionOffset is not None else ''
+        extension_offset = f' (extension_offset {_fmt(self.extensionOffset)})' if self.extensionOffset is not None else ''
         keep_aligned = f' keep_text_aligned' if self.keepTextAligned else ''
 
-        expression =  f'{indents}(style (thickness {self.thickness}) (arrow_length {self.arrowLength}) (text_position_mode {self.textPositionMode}){extension_height}{text_frame}{extension_offset}{keep_aligned}){endline}'
+        expression =  f'{indents}(style (thickness {_fmt(self.thickness)}) (arrow_length {_fmt(self.arrowLength)}) (text_position_mode {self.textPositionMode}){extension_height}{text_frame}{extension_offset}{keep_aligned}){endline}'
         return expression
 
 @dataclass
@@ -317,18 +317,18 @@ class Dimension():
 
         points = ''
         for point in self.pts:
-            points = f'{points} (xy {point.X} {point.Y})'
+            points = f'{points} (xy {_fmt(point.X)} {_fmt(point.Y)})'
         if len(points) == 0:
             raise Exception("Number of points must not be zero")
 
         expression =   f'{indents}(dimension (type {self.type}) (layer "{self.layer}") (tstamp {self.tstamp})\n'
         expression +=  f'{indents}  (pts{points})\n'
         if self.height is not None:
-            expression +=  f'{indents}  (height {self.height})\n'
+            expression +=  f'{indents}  (height {_fmt(self.height)})\n'
         if self.orientation is not None:
-            expression +=  f'{indents}  (orientation {self.orientation})\n'
+            expression +=  f'{indents}  (orientation {_fmt(self.orientation)})\n'
         if self.leaderLength is not None:
-            expression +=  f'{indents}  (leader_length {self.leaderLength})\n'
+            expression +=  f'{indents}  (leader_length {_fmt(self.leaderLength)})\n'
         if self.grText is not None:
             expression += self.grText.to_sexpr(indent+2)
         if self.format is not None:

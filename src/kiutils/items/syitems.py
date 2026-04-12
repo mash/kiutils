@@ -21,7 +21,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 
 from kiutils.items.common import Fill, Position, Stroke, Effects, Fill
-from kiutils.utils.strings import dequote
+from kiutils.utils.strings import dequote, _fmt
 
 @dataclass
 class SyArc():
@@ -98,12 +98,12 @@ class SyArc():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        startA = f' {self.start.angle}' if self.start.angle is not None else ''
-        midA = f' {self.mid.angle}' if self.mid.angle is not None else ''
-        endA = f' {self.end.angle}' if self.end.angle is not None else ''
+        startA = f' {_fmt(self.start.angle)}' if self.start.angle is not None else ''
+        midA = f' {_fmt(self.mid.angle)}' if self.mid.angle is not None else ''
+        endA = f' {_fmt(self.end.angle)}' if self.end.angle is not None else ''
         private = ' private' if self.private else ''
 
-        expression =  f'{indents}(arc{private} (start {self.start.X} {self.start.Y}{startA}) (mid {self.mid.X} {self.mid.Y}{midA}) (end {self.end.X} {self.end.Y}{endA})\n'
+        expression =  f'{indents}(arc{private} (start {_fmt(self.start.X)} {_fmt(self.start.Y)}{startA}) (mid {_fmt(self.mid.X)} {_fmt(self.mid.Y)}{midA}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}{endA})\n'
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
         expression += f'{indents}){endline}'
@@ -181,7 +181,7 @@ class SyCircle():
         endline = '\n' if newline else ''
         private = ' private' if self.private else ''
 
-        expression =  f'{indents}(circle{private} (center {self.center.X} {self.center.Y}) (radius {self.radius})\n'
+        expression =  f'{indents}(circle{private} (center {_fmt(self.center.X)} {_fmt(self.center.Y)}) (radius {_fmt(self.radius)})\n'
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
         expression += f'{indents}){endline}'
@@ -249,7 +249,7 @@ class SyCurve():
         expression =  f'{indents}(curve\n'
         expression =  f'{indents}  (pts\n'
         for point in self.points:
-            expression =  f'{indents}    (xy {point.X} {point.Y})\n'
+            expression =  f'{indents}    (xy {_fmt(point.X)} {_fmt(point.Y)})\n'
         expression =  f'{indents}  )\n'
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
@@ -318,7 +318,7 @@ class SyPolyLine():
         expression =  f'{indents}(polyline\n'
         expression +=  f'{indents}  (pts\n'
         for point in self.points:
-            expression +=  f'{indents}    (xy {point.X} {point.Y})\n'
+            expression +=  f'{indents}    (xy {_fmt(point.X)} {_fmt(point.Y)})\n'
         expression += f'{indents}  )\n'
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
@@ -397,7 +397,7 @@ class SyRect():
         endline = '\n' if newline else ''
         private = ' private' if self.private else ''
 
-        expression =  f'{indents}(rectangle{private} (start {self.start.X} {self.start.Y}) (end {self.end.X} {self.end.Y})\n'
+        expression =  f'{indents}(rectangle{private} (start {_fmt(self.start.X)} {_fmt(self.start.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)})\n'
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
         expression += f'{indents}){endline}'
@@ -460,9 +460,9 @@ class SyText():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        posA = f' {self.position.angle}' if self.position.angle is not None else ''
+        posA = f' {_fmt(self.position.angle)}' if self.position.angle is not None else ''
 
-        expression =  f'{indents}(text "{dequote(self.text)}" (at {self.position.X} {self.position.Y}{posA})\n'
+        expression =  f'{indents}(text "{dequote(self.text)}" (at {_fmt(self.position.X)} {_fmt(self.position.Y)}{posA})\n'
         expression += f'{indents}  {self.effects.to_sexpr()}'
         expression += f'{indents}){endline}'
         return expression
@@ -558,11 +558,11 @@ class SyTextBox():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        posA = f' {self.position.angle}' if self.position.angle is not None else ''
+        posA = f' {_fmt(self.position.angle)}' if self.position.angle is not None else ''
         private = ' private' if self.private else ''
 
         expression =  f'{indents}(text_box{private} "{dequote(self.text)}"\n'
-        expression += f'{indents}  (at {self.position.X} {self.position.Y}{posA}) (size {self.size.X} {self.size.Y})\n'
+        expression += f'{indents}  (at {_fmt(self.position.X)} {_fmt(self.position.Y)}{posA}) (size {_fmt(self.size.X)} {_fmt(self.size.Y)})\n'
         expression += self.stroke.to_sexpr(indent+2)
         expression += self.fill.to_sexpr(indent+2)
         expression += self.effects.to_sexpr(indent+2)

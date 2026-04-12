@@ -20,7 +20,7 @@ from typing import Optional, List
 from os import path
 
 from kiutils.items.common import Justify
-from kiutils.utils.strings import dequote
+from kiutils.utils.strings import dequote, _fmt
 from kiutils.utils import sexpr
 from kiutils.misc.config import KIUTILS_CREATE_NEW_GENERATOR_STR, KIUTILS_CREATE_NEW_VERSION_STR
 
@@ -71,7 +71,7 @@ class WksFontSize():
         """
         indents = ' '*indent
         endline = '\n' if newline else ''
-        return f'{indents}(size {self.width} {self.height}){endline}'
+        return f'{indents}(size {_fmt(self.width)} {_fmt(self.height)}){endline}'
 
 @dataclass
 class WksFont():
@@ -133,7 +133,7 @@ class WksFont():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        lw = f' (linewidth {self.linewidth})' if self.linewidth is not None else ''
+        lw = f' (linewidth {_fmt(self.linewidth)})' if self.linewidth is not None else ''
         size = f' {self.size.to_sexpr()}' if self.size is not None else ''
         bold = f' bold' if self.bold else ''
         italic = f' italic' if self.italic else ''
@@ -277,14 +277,14 @@ class Line():
         end_corner = f' {self.end.corner}' if self.end.corner is not None else ''
         option = f' (option {self.option})' if self.option is not None else ''
         repeat = f' (repeat {self.repeat})' if self.repeat is not None else ''
-        incrx = f' (incrx {self.incrx})' if self.incrx is not None else ''
-        incry = f' (incry {self.incry})' if self.incry is not None else ''
+        incrx = f' (incrx {_fmt(self.incrx)})' if self.incrx is not None else ''
+        incry = f' (incry {_fmt(self.incry)})' if self.incry is not None else ''
         comment = f' (comment "{dequote(self.comment)}")\n' if self.comment is not None else ''
-        lw = f' (linewidth {self.lineWidth})' if self.lineWidth is not None else ''
+        lw = f' (linewidth {_fmt(self.lineWidth)})' if self.lineWidth is not None else ''
 
         expression  = f'{indents}(line (name "{dequote(self.name)}") '
-        expression += f'(start {self.start.X} {self.start.Y}{start_corner}) '
-        expression += f'(end {self.end.X} {self.end.Y}{end_corner})'
+        expression += f'(start {_fmt(self.start.X)} {_fmt(self.start.Y)}{start_corner}) '
+        expression += f'(end {_fmt(self.end.X)} {_fmt(self.end.Y)}{end_corner})'
         expression += f'{option}{lw}{repeat}{incrx}{incry}{comment}){endline}'
         return expression
 
@@ -376,14 +376,14 @@ class Rect():
         end_corner = f' {self.end.corner}' if self.end.corner is not None else ''
         option = f' (option {self.option})' if self.option is not None else ''
         repeat = f' (repeat {self.repeat})' if self.repeat is not None else ''
-        incrx = f' (incrx {self.incrx})' if self.incrx is not None else ''
-        incry = f' (incry {self.incry})' if self.incry is not None else ''
+        incrx = f' (incrx {_fmt(self.incrx)})' if self.incrx is not None else ''
+        incry = f' (incry {_fmt(self.incry)})' if self.incry is not None else ''
         comment = f' (comment "{dequote(self.comment)}")\n' if self.comment is not None else ''
-        lw = f' (linewidth {self.lineWidth})' if self.lineWidth is not None else ''
+        lw = f' (linewidth {_fmt(self.lineWidth)})' if self.lineWidth is not None else ''
 
         expression  = f'{indents}(rect (name "{dequote(self.name)}") '
-        expression += f'(start {self.start.X} {self.start.Y}{start_corner}) '
-        expression += f'(end {self.end.X} {self.end.Y}{end_corner})'
+        expression += f'(start {_fmt(self.start.X)} {_fmt(self.start.Y)}{start_corner}) '
+        expression += f'(end {_fmt(self.end.X)} {_fmt(self.end.Y)}{end_corner})'
         expression += f'{option}{lw}{repeat}{incrx}{incry}{comment}){endline}'
         return expression
 
@@ -555,13 +555,13 @@ class Bitmap():
         endline = '\n' if newline else ''
 
         repeat = f' (repeat {self.repeat})' if self.repeat is not None else ''
-        incrx = f' (incrx {self.incrx})' if self.incrx is not None else ''
-        incry = f' (incry {self.incry})' if self.incry is not None else ''
+        incrx = f' (incrx {_fmt(self.incrx)})' if self.incrx is not None else ''
+        incry = f' (incry {_fmt(self.incry)})' if self.incry is not None else ''
         option = f' (option {self.option})' if self.option is not None else ''
         corner = f' {self.position.corner}' if self.position.corner is not None else ''
 
         expression  = f'{indents}(bitmap (name "{dequote(self.name)}") '
-        expression += f'(pos {self.position.X} {self.position.Y}{corner}){option} (scale {self.scale})'
+        expression += f'(pos {_fmt(self.position.X)} {_fmt(self.position.Y)}{corner}){option} (scale {_fmt(self.scale)})'
         expression += f'{repeat}{incrx}{incry}\n'
         if self.comment is not None:
             # Here KiCad decides to only use 1 space for some unknown reason ..
@@ -681,18 +681,18 @@ class TbText():
 
         corner = f' {self.position.corner}' if self.position.corner is not None else ''
         repeat = f' (repeat {self.repeat})' if self.repeat is not None else ''
-        incrx = f' (incrx {self.incrx})' if self.incrx is not None else ''
-        incry = f' (incry {self.incry})' if self.incry is not None else ''
+        incrx = f' (incrx {_fmt(self.incrx)})' if self.incrx is not None else ''
+        incry = f' (incry {_fmt(self.incry)})' if self.incry is not None else ''
         option = f' (option {self.option})' if self.option is not None else ''
-        rotate = f' (rotate {self.rotate})' if self.rotate is not None else ''
+        rotate = f' (rotate {_fmt(self.rotate)})' if self.rotate is not None else ''
         justify = f' {self.justify.to_sexpr()}' if self.justify is not None else ''
-        maxlen = f' (maxlen {self.maxlen})' if self.maxlen is not None else ''
-        maxheight = f' (maxheight {self.maxheight})' if self.maxheight is not None else ''
-        incrlabel = f' (incrlabel {self.incrlabel})' if self.incrlabel is not None else ''
+        maxlen = f' (maxlen {_fmt(self.maxlen)})' if self.maxlen is not None else ''
+        maxheight = f' (maxheight {_fmt(self.maxheight)})' if self.maxheight is not None else ''
+        incrlabel = f' (incrlabel {_fmt(self.incrlabel)})' if self.incrlabel is not None else ''
         font = f' {self.font.to_sexpr()}' if self.font.to_sexpr() != '' else ''
 
         expression  = f'{indents}(tbtext "{dequote(self.text)}" (name "{dequote(self.name)}") '
-        expression += f'(pos {self.position.X} {self.position.Y}{corner}){option}{rotate}'
+        expression += f'(pos {_fmt(self.position.X)} {_fmt(self.position.Y)}{corner}){option}{rotate}'
         expression += f'{font}{justify}{maxlen}{maxheight}{repeat}{incrx}{incry}{incrlabel}'
         if self.comment is not None:
             expression += f' (comment "{dequote(self.comment)}")\n'
@@ -747,7 +747,7 @@ class TextSize():
         """
         indents = ' '*indent
         endline = '\n' if newline else ''
-        return f'{indents}(textsize {self.width} {self.height}){endline}'
+        return f'{indents}(textsize {_fmt(self.width)} {_fmt(self.height)}){endline}'
 
 @dataclass
 class Setup():
@@ -823,10 +823,10 @@ class Setup():
         endline = '\n' if newline else ''
 
         # KiCad puts no spaces between tokens here
-        expression =  f'{indents}(setup {self.textSize.to_sexpr()}(linewidth {self.lineWidth})'
-        expression += f'(textlinewidth {self.textLineWidth})\n{indents}'
-        expression += f'(left_margin {self.leftMargin})(right_margin {self.rightMargin})'
-        expression += f'(top_margin {self.topMargin})(bottom_margin {self.bottomMargin})'
+        expression =  f'{indents}(setup {self.textSize.to_sexpr()}(linewidth {_fmt(self.lineWidth)})'
+        expression += f'(textlinewidth {_fmt(self.textLineWidth)})\n{indents}'
+        expression += f'(left_margin {_fmt(self.leftMargin)})(right_margin {_fmt(self.rightMargin)})'
+        expression += f'(top_margin {_fmt(self.topMargin)})(bottom_margin {_fmt(self.bottomMargin)})'
         expression += f'){endline}'
 
         return expression

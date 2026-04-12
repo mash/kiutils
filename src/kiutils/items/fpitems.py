@@ -21,7 +21,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List
 
 from kiutils.items.common import RenderCache, Stroke, Position, Effects
-from kiutils.utils.strings import dequote
+from kiutils.utils.strings import dequote, _fmt
 
 # FIXME: Several classes have a ``stroke`` member. This feature will be introduced in KiCad 7 and
 #        has yet to be tested here.
@@ -120,10 +120,10 @@ class FpText():
 
         hide = ' hide' if self.hide else ''
         unlocked = ' unlocked' if self.position.unlocked else ''
-        posA = f' {self.position.angle}' if self.position.angle is not None else ''
+        posA = f' {_fmt(self.position.angle)}' if self.position.angle is not None else ''
         ko = ' knockout' if self.knockout else ''
 
-        expression =  f'{indents}(fp_text {self.type} "{dequote(self.text)}" (at {self.position.X} {self.position.Y}{posA}{unlocked}) (layer "{dequote(self.layer)}"{ko}){hide}\n'
+        expression =  f'{indents}(fp_text {self.type} "{dequote(self.text)}" (at {_fmt(self.position.X)} {_fmt(self.position.Y)}{posA}{unlocked}) (layer "{dequote(self.layer)}"{ko}){hide}\n'
         expression += f'{indents}  {self.effects.to_sexpr()}'
         if self.tstamp is not None:
             expression += f'{indents}  (tstamp {self.tstamp})\n'
@@ -216,13 +216,13 @@ class FpLine():
         endline = '\n' if newline else ''
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
         if self.width is not None:
-            width = f' (width {self.width})'
+            width = f' (width {_fmt(self.width)})'
         elif self.stroke is not None:
             width = f' {self.stroke.to_sexpr(indent=0, newline=False)}'
         else:
             width = ''
 
-        return f'{indents}(fp_line (start {self.start.X} {self.start.Y}) (end {self.end.X} {self.end.Y}) (layer "{dequote(self.layer)}"){width}{tstamp}){endline}'
+        return f'{indents}(fp_line (start {_fmt(self.start.X)} {_fmt(self.start.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}) (layer "{dequote(self.layer)}"){width}{tstamp}){endline}'
 
 @dataclass
 class FpRect():
@@ -315,13 +315,13 @@ class FpRect():
         fill = f' (fill {self.fill})' if self.fill is not None else ''
 
         if self.width is not None:
-            width = f' (width {self.width})'
+            width = f' (width {_fmt(self.width)})'
         elif self.stroke is not None:
             width = f' {self.stroke.to_sexpr(indent=0, newline=False)}'
         else:
             width = ''
 
-        return f'{indents}(fp_rect (start {self.start.X} {self.start.Y}) (end {self.end.X} {self.end.Y}) (layer "{dequote(self.layer)}"){width}{fill}{locked}{tstamp}){endline}'
+        return f'{indents}(fp_rect (start {_fmt(self.start.X)} {_fmt(self.start.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}) (layer "{dequote(self.layer)}"){width}{fill}{locked}{tstamp}){endline}'
 
 @dataclass
 class FpTextBox():
@@ -450,15 +450,15 @@ class FpTextBox():
         endline = '\n' if newline else ''
 
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
-        angle = f'(angle {self.angle}) ' if self.angle is not None else ''
-        start = f'(start {self.start.X} {self.start.Y}) ' if self.start is not None else ''
-        end = f'(end {self.end.X} {self.end.Y}) ' if self.end is not None else ''
+        angle = f'(angle {_fmt(self.angle)}) ' if self.angle is not None else ''
+        start = f'(start {_fmt(self.start.X)} {_fmt(self.start.Y)}) ' if self.start is not None else ''
+        end = f'(end {_fmt(self.end.X)} {_fmt(self.end.Y)}) ' if self.end is not None else ''
         locked = ' locked' if self.locked else ''
 
         expression = f'{indents}(fp_text_box{locked} "{dequote(self.text)}"\n'
         if len(self.pts) == 4:
             expression += f'{indents}  (pts\n'
-            expression += f'{indents}    (xy {self.pts[0].X} {self.pts[0].Y})      (xy {self.pts[1].X} {self.pts[1].Y})      (xy {self.pts[2].X} {self.pts[2].Y})      (xy {self.pts[3].X} {self.pts[3].Y})\n'
+            expression += f'{indents}    (xy {_fmt(self.pts[0].X)} {_fmt(self.pts[0].Y)})      (xy {_fmt(self.pts[1].X)} {_fmt(self.pts[1].Y)})      (xy {_fmt(self.pts[2].X)} {_fmt(self.pts[2].Y)})      (xy {_fmt(self.pts[3].X)} {_fmt(self.pts[3].Y)})\n'
             expression += f'{indents}  )\n'
         expression += f'{indents}  {start}{end}{angle}(layer "{dequote(self.layer)}"){tstamp}\n'
         if self.effects is not None:
@@ -561,13 +561,13 @@ class FpCircle():
         fill = f' (fill {self.fill})' if self.fill is not None else ''
 
         if self.width is not None:
-            width = f' (width {self.width})'
+            width = f' (width {_fmt(self.width)})'
         elif self.stroke is not None:
             width = f' {self.stroke.to_sexpr(indent=0, newline=False)}'
         else:
             width = ''
 
-        return f'{indents}(fp_circle (center {self.center.X} {self.center.Y}) (end {self.end.X} {self.end.Y}) (layer "{dequote(self.layer)}"){width}{fill}{locked}{tstamp}){endline}'
+        return f'{indents}(fp_circle (center {_fmt(self.center.X)} {_fmt(self.center.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}) (layer "{dequote(self.layer)}"){width}{fill}{locked}{tstamp}){endline}'
 
 @dataclass
 class FpArc():
@@ -658,13 +658,13 @@ class FpArc():
         locked = ' locked' if self.locked else ''
 
         if self.width is not None:
-            width = f' (width {self.width})'
+            width = f' (width {_fmt(self.width)})'
         elif self.stroke is not None:
             width = f' {self.stroke.to_sexpr(indent=0, newline=False)}'
         else:
             width = ''
 
-        return f'{indents}(fp_arc (start {self.start.X} {self.start.Y}) (mid {self.mid.X} {self.mid.Y}) (end {self.end.X} {self.end.Y}) (layer "{dequote(self.layer)}"){width}{locked}{tstamp}){endline}'
+        return f'{indents}(fp_arc (start {_fmt(self.start.X)} {_fmt(self.start.Y)}) (mid {_fmt(self.mid.X)} {_fmt(self.mid.Y)}) (end {_fmt(self.end.X)} {_fmt(self.end.Y)}) (layer "{dequote(self.layer)}"){width}{locked}{tstamp}){endline}'
 
 @dataclass
 class FpPoly():
@@ -759,7 +759,7 @@ class FpPoly():
         fill = f' (fill {self.fill})' if self.fill is not None else ''
 
         if self.width is not None:
-            width = f' (width {self.width})'
+            width = f' (width {_fmt(self.width)})'
         elif self.stroke is not None:
             width = f' {self.stroke.to_sexpr(indent=0, newline=False)}'
         else:
@@ -767,7 +767,7 @@ class FpPoly():
 
         expression = f'{indents}(fp_poly (pts\n'
         for point in self.coordinates:
-            expression += f'{indents}    (xy {point.X} {point.Y})\n'
+            expression += f'{indents}    (xy {_fmt(point.X)} {_fmt(point.Y)})\n'
         expression += f'{indents}  ) (layer "{dequote(self.layer)}"){width}{fill}{locked}{tstamp}){endline}'
         return expression
 
@@ -857,7 +857,7 @@ class FpCurve():
         locked = ' locked' if self.locked else ''
 
         if self.width is not None:
-            width = f' (width {self.width})'
+            width = f' (width {_fmt(self.width)})'
         elif self.stroke is not None:
             width = f' {self.stroke.to_sexpr(indent=0, newline=False)}'
         else:
@@ -865,6 +865,6 @@ class FpCurve():
 
         expression = f'{indents}(fp_curve (pts\n'
         for point in self.coordinates:
-            expression += f'{indents}  (xy {point.X} {point.Y})\n'
+            expression += f'{indents}  (xy {_fmt(point.X)} {_fmt(point.Y)})\n'
         expression += f'{indents}) (layer "{dequote(self.layer)}"){width}{locked}{tstamp}){endline}'
         return expression
