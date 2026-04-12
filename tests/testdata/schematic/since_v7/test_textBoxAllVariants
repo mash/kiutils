@@ -300,23 +300,28 @@
     (uuid f0912024-d068-4f99-b14f-8be690c2f8ce)
   )
 
-  (text "Hyperlinks" (at 69.85 19.05 0)
+  (text "Hyperlinks"
+    (at 69.85 19.05 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 0fd0de2c-5e2f-444f-bf95-eea3714c134e)
   )
-  (text "Misc" (at 86.36 19.05 0)
+  (text "Misc"
+    (at 86.36 19.05 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 1f3432ca-65b2-4665-a4ca-f4e50f4a32a6)
   )
-  (text "Style" (at 20.32 19.05 0)
+  (text "Style"
+    (at 20.32 19.05 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 2801bf9e-313c-48ce-9b17-9c0cf8ce3fcf)
   )
-  (text "Text style" (at 53.34 19.05 0)
+  (text "Text style"
+    (at 53.34 19.05 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 3f507998-5b20-44ce-86fc-7b7e8636533c)
   )
-  (text "Alignment" (at 38.1 19.05 0)
+  (text "Alignment"
+    (at 38.1 19.05 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 736f09e5-8e11-4495-a56f-e77e7a6b258d)
   )

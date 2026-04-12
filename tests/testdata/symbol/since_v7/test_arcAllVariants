@@ -7,10 +7,10 @@
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "" (id 2) (at 0 0 0)
-      (effects (font (size 1.27 1.27)) hide)
+      (effects (font (size 1.27 1.27)) (hide yes))
     )
     (property "Datasheet" "" (id 3) (at 0 0 0)
-      (effects (font (size 1.27 1.27)) hide)
+      (effects (font (size 1.27 1.27)) (hide yes))
     )
     (symbol "arc_0_1"
       (arc (start 1.27 -22.86) (mid 3.9641 -21.7441) (end 5.08 -19.05)

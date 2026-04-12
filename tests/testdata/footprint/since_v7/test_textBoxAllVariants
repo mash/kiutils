@@ -33,7 +33,7 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 81.28) (end 55.88 83.82) (layer "F.SilkS") (tstamp 075ac5dc-d8fe-4385-8466-6ca73fbf873e)
-    (effects (font (size 1 1) (thickness 0.2) bold) (justify left top mirror))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes)) (justify left top mirror))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -43,12 +43,12 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 45.72) (end 55.88 48.26) (layer "F.SilkS") (tstamp 19aa2dfe-8e81-4696-91b2-6293a03112d3)
-    (effects (font (size 1 1) (thickness 0.1) italic) (justify right top))
+    (effects (font (size 1 1) (thickness 0.1) (italic yes)) (justify right top))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 35.56) (end 55.88 38.1) (layer "F.SilkS") (tstamp 1dbd5b15-621a-45e0-9e0a-84a64137d125)
-    (effects (font (size 1 1) (thickness 0.1) italic) (justify left top))
+    (effects (font (size 1 1) (thickness 0.1) (italic yes)) (justify left top))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -58,22 +58,22 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 106.68) (end 55.88 109.22) (layer "F.SilkS") (tstamp 1ddb9369-023f-46d4-a270-b5633a5ac338)
-    (effects (font (size 1 1) (thickness 0.1) italic) (justify right top mirror))
+    (effects (font (size 1 1) (thickness 0.1) (italic yes)) (justify right top mirror))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 86.36) (end 55.88 88.9) (layer "F.SilkS") (tstamp 22238a34-72ee-400b-80d3-5e54ad3de17a)
-    (effects (font (size 1 1) (thickness 0.2) bold) (justify top mirror))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes)) (justify top mirror))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 50.8) (end 55.88 53.34) (layer "F.SilkS") (tstamp 22657e6e-100d-4d3a-a3c3-fb8a57a6ab75)
-    (effects (font (size 1 1) (thickness 0.2) bold italic) (justify left top))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes) (italic yes)) (justify left top))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 25.4) (end 55.88 27.94) (layer "F.SilkS") (tstamp 2de82614-e4ad-4a86-94c1-b42fc39caa09)
-    (effects (font (size 1 1) (thickness 0.2) bold) (justify top))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes)) (justify top))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -83,7 +83,7 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 30.48) (end 55.88 33.02) (layer "F.SilkS") (tstamp 38b19ef6-3b2e-47b2-999a-a277e1b79652)
-    (effects (font (size 1 1) (thickness 0.2) bold) (justify right top))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes)) (justify right top))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -101,12 +101,12 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 96.52) (end 55.88 99.06) (layer "F.SilkS") (tstamp 722bb73b-d9b5-4896-ab08-b94c5e51b720)
-    (effects (font (size 1 1) (thickness 0.1) italic) (justify left top mirror))
+    (effects (font (size 1 1) (thickness 0.1) (italic yes)) (justify left top mirror))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 60.96) (end 55.88 63.5) (layer "F.SilkS") (tstamp 84d117bc-8774-4a68-8f27-a907c3e275ff)
-    (effects (font (size 1 1) (thickness 0.2) bold italic) (justify right top))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes) (italic yes)) (justify right top))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -115,12 +115,12 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 20.32) (end 55.88 22.86) (layer "F.SilkS") (tstamp 8d20babe-adfe-43ea-8b8a-471fa69e8eba)
-    (effects (font (size 1 1) (thickness 0.2) bold) (justify left top))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes)) (justify left top))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 116.84) (end 55.88 119.38) (layer "F.SilkS") (tstamp 8e8ecceb-51eb-4c0a-8dca-62e6b38f8546)
-    (effects (font (size 1 1) (thickness 0.2) bold italic) (justify top mirror))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes) (italic yes)) (justify top mirror))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -134,7 +134,7 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 111.76) (end 55.88 114.3) (layer "F.SilkS") (tstamp a1462a23-eef0-4434-8353-111d6567f099)
-    (effects (font (size 1 1) (thickness 0.2) bold italic) (justify left top mirror))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes) (italic yes)) (justify left top mirror))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -169,7 +169,7 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 40.64) (end 55.88 43.18) (layer "F.SilkS") (tstamp c04984b2-2670-4380-a9ac-6c69e7772c59)
-    (effects (font (size 1 1) (thickness 0.1) italic) (justify top))
+    (effects (font (size 1 1) (thickness 0.1) (italic yes)) (justify top))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -178,7 +178,7 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 121.92) (end 55.88 124.46) (layer "F.SilkS") (tstamp c29911b4-ee3a-42f0-b5e3-330c73e204a4)
-    (effects (font (size 1 1) (thickness 0.2) bold italic) (justify right top mirror))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes) (italic yes)) (justify right top mirror))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -188,7 +188,7 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 55.88) (end 55.88 58.42) (layer "F.SilkS") (tstamp c6ec68b1-9e6b-4b2c-8c39-1131651342fe)
-    (effects (font (size 1 1) (thickness 0.2) bold italic) (justify top))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes) (italic yes)) (justify top))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -207,7 +207,7 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 101.6) (end 55.88 104.14) (layer "F.SilkS") (tstamp e55d9467-e61f-4c22-b2a7-2d89e7a31fec)
-    (effects (font (size 1 1) (thickness 0.1) italic) (justify top mirror))
+    (effects (font (size 1 1) (thickness 0.1) (italic yes)) (justify top mirror))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
@@ -217,7 +217,7 @@
   )
   (fp_text_box "test {dblquote}test{dblquote} \\\\test\\\\ \\\\\\\\\\\\\\"
     (start 33.02 91.44) (end 55.88 93.98) (layer "F.SilkS") (tstamp f4022187-7c2b-4191-beb9-8a6e1add5cdd)
-    (effects (font (size 1 1) (thickness 0.2) bold) (justify right top mirror))
+    (effects (font (size 1 1) (thickness 0.2) (bold yes)) (justify right top mirror))
     (stroke (width 0.1) (type solid))
   )
   (fp_text_box "t a"

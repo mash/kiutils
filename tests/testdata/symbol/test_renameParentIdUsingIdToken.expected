@@ -1,5 +1,11 @@
 (kicad_symbol_lib (version 20211014) (generator kicad_symbol_editor)
-  (symbol "ExampleLibrary:AD2023" (power) (pin_numbers hide) (pin_names (offset 0.635)) (in_bom no) (on_board no)
+  (symbol "ExampleLibrary:AD2023" (power)
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0.635)
+    ) (in_bom no) (on_board no)
     (property "Value" "AD1853" (id 1) (at 0 13.97 0)
       (effects (font (size 1.27 1.27)))
     )
@@ -54,7 +60,13 @@
       )
     )
   )
-  (symbol "AD2023" (power) (pin_numbers hide) (pin_names (offset 0.635)) (in_bom no) (on_board no)
+  (symbol "AD2023" (power)
+    (pin_numbers
+      (hide yes)
+    )
+    (pin_names
+      (offset 0.635)
+    ) (in_bom no) (on_board no)
     (property "Value" "AD1853" (id 1) (at 0 13.97 0)
       (effects (font (size 1.27 1.27)))
     )
