@@ -13,7 +13,9 @@ from kiutils.items.schitems import HierarchicalSheetInstance
 
 from tests.testfunctions import to_file_and_compare, prepare_test, cleanup_after_test, TEST_BASE
 from kiutils.schematic import Schematic
+from kiutils.items.common import Position, Effects, Font
 from kiutils.items.common import Property
+from kiutils.symbol import SymbolPin
 
 SCHEMATIC_BASE = path.join(TEST_BASE, 'schematic')
 
@@ -23,6 +25,44 @@ class Tests_Schematic(unittest.TestCase):
     def setUp(self) -> None:
         prepare_test(self)
         return super().setUp()
+
+    def test_addPinToLibSymbolSyncsPinInstances(self):
+        """Adding a pin to a lib_symbol must auto-generate pin instances in every
+        SchematicSymbol that references it. Without this, KiCad silently ignores
+        the new pin's electrical connections (pin_not_connected ERC error)."""
+        input_file = path.join(SCHEMATIC_BASE, 'test_addPropertyToSchematicSymbol')
+        output_file = input_file + '.testoutput'
+        schematic = Schematic().from_file(input_file)
+
+        # Precondition: SchematicSymbol has exactly pins "1" and "2"
+        self.assertEqual(set(schematic.schematicSymbols[0].pins.keys()), {'1', '2'})
+
+        # Add a new pin "3" to the lib_symbol's unit that already has pins
+        new_pin = SymbolPin()
+        new_pin.electricalType = 'passive'
+        new_pin.graphicalStyle = 'line'
+        new_pin.name = 'A3'
+        new_pin.number = '3'
+        new_pin.position = Position(X=0, Y=3.81, angle=90)
+        new_pin.length = 2.54
+        new_pin.nameEffects = Effects(font=Font(width=1.27, height=1.27))
+        new_pin.numberEffects = Effects(font=Font(width=1.27, height=1.27))
+        schematic.libSymbols[0].units[1].pins.append(new_pin)
+
+        # Write and re-read
+        schematic.to_file(output_file)
+        result = Schematic().from_file(output_file)
+        import os
+        os.remove(output_file)
+
+        # The SchematicSymbol must now include a pin instance for "3"
+        result_pins = result.schematicSymbols[0].pins
+        self.assertIn('3', result_pins, 'New lib_symbol pin must have a pin instance in SchematicSymbol')
+        # UUID must be a non-empty string
+        self.assertTrue(len(result_pins['3']) > 0, 'Pin instance UUID must not be empty')
+        # Existing pins must be preserved
+        self.assertIn('1', result_pins)
+        self.assertIn('2', result_pins)
 
     def test_addPropertyToSchematicSymbol(self):
         """Adds a new property to an already existing symbol in the schematic and verifies the

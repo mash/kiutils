@@ -18,6 +18,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional, List, Union
 from os import path
+from uuid import uuid4
 
 from kiutils.items.common import Image, PageSettings, TitleBlock
 from kiutils.items.schitems import *
@@ -241,6 +242,31 @@ class Schematic():
         with open(filepath, 'w', encoding=encoding) as outfile:
             outfile.write(self.to_sexpr())
 
+    def _syncPinInstances(self):
+        """Ensure every SchematicSymbol has pin instances for all pins defined in
+        its referenced lib_symbol. Missing entries get a generated UUID.
+
+        KiCad requires a ``(pin "N" (uuid ...))`` entry in each placed symbol
+        for every pin in the library definition. Without it, the pin is silently
+        ignored for electrical connectivity."""
+        # Build libId -> {pin_number, ...} from lib_symbols
+        lib_pin_numbers: dict[str, set[str]] = {}
+        for lib in self.libSymbols:
+            nums: set[str] = set()
+            for pin in lib.pins:
+                nums.add(pin.number)
+            for unit in lib.units:
+                for pin in unit.pins:
+                    nums.add(pin.number)
+            lib_pin_numbers[lib.libId] = nums
+
+        # Add missing pin instances to each schematic symbol
+        for sym in self.schematicSymbols:
+            expected = lib_pin_numbers.get(sym.libId, set())
+            for num in expected:
+                if num not in sym.pins:
+                    sym.pins[num] = str(uuid4())
+
     def to_sexpr(self, indent=0, newline=True) -> str:
         """Generate the S-Expression representing this object
 
@@ -338,6 +364,7 @@ class Schematic():
                 expression += item.to_sexpr(indent+2)
 
         if self.schematicSymbols:
+            self._syncPinInstances()
             for item in self.schematicSymbols:
                 expression += '\n'
                 expression += item.to_sexpr(indent+2)
