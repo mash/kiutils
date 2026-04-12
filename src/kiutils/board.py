@@ -43,6 +43,21 @@ class Board():
     generator: str = ""
     """The ``generator`` token defines the program used to write the file"""
 
+    generatorVersion: Optional[str] = None
+    """The ``generator_version`` token defines the version of the program used to write the file.
+
+    Available since KiCad v8"""
+
+    uuid: Optional[str] = None
+    """The ``uuid`` token defines the unique identifier for the board.
+
+    Available since KiCad v8"""
+
+    embeddedFonts: Optional[bool] = None
+    """The ``embedded_fonts`` token defines if fonts are embedded in the board.
+
+    Available since KiCad v8"""
+
     general: GeneralSettings = field(default_factory=lambda: GeneralSettings())
     """The ``general`` token defines general information about the board"""
 
@@ -117,6 +132,9 @@ class Board():
         for item in exp:
             if item[0] == 'version': object.version = item[1]
             if item[0] == 'generator': object.generator = item[1]
+            if item[0] == 'generator_version': object.generatorVersion = item[1]
+            if item[0] == 'uuid': object.uuid = item[1]
+            if item[0] == 'embedded_fonts': object.embeddedFonts = True if item[1] == 'yes' else False
             if item[0] == 'general': object.general = GeneralSettings().from_sexpr(item)
             if item[0] == 'paper': object.paper = PageSettings().from_sexpr(item)
             if item[0] == 'title_block': object.titleBlock = TitleBlock().from_sexpr(item)
@@ -255,7 +273,17 @@ class Board():
 
         addNewLine = False
 
-        expression =  f'{indents}(kicad_pcb (version {self.version}) (generator {self.generator})\n\n'
+        if self.generatorVersion is not None:
+            gv = f' (generator_version "{self.generatorVersion}")'
+            expression =  f'{indents}(kicad_pcb (version {self.version}) (generator "{dequote(self.generator)}"){gv}\n'
+        else:
+            expression =  f'{indents}(kicad_pcb (version {self.version}) (generator {self.generator})\n'
+        if self.uuid is not None:
+            expression += f'{indents}  (uuid "{dequote(self.uuid)}")\n'
+        if self.embeddedFonts is not None:
+            ef = 'yes' if self.embeddedFonts else 'no'
+            expression += f'{indents}  (embedded_fonts {ef})\n'
+        expression += '\n'
         expression += self.general.to_sexpr(indent+2) + '\n'
         expression += self.paper.to_sexpr(indent+2)
         if self.titleBlock is not None:

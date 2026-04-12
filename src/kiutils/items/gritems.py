@@ -54,10 +54,15 @@ class GrText():
     locked: bool = False
     """The ``locked`` token defines if the object may be moved or not"""
 
+    uuid: Optional[str] = None
+    """The ``uuid`` token defines the unique identifier of the text object.
+
+    Available since KiCad v8 (replaces tstamp)"""
+
     renderCache: Optional[RenderCache] = None
-    """If the ``effects`` token prescribe a TrueType font then the optional ``render_cache`` token 
+    """If the ``effects`` token prescribe a TrueType font then the optional ``render_cache`` token
     should be given in case the font can not be found on the current system.
-    
+
     Available since KiCad v7"""
 
     @classmethod
@@ -94,6 +99,7 @@ class GrText():
                         object.knockout = True
             if item[0] == 'effects': object.effects = Effects().from_sexpr(item)
             if item[0] == 'tstamp': object.tstamp = item[1]
+            if item[0] == 'uuid': object.uuid = item[1]
             if item[0] == 'render_cache': object.renderCache = RenderCache.from_sexpr(item)
         return object
 
@@ -114,9 +120,10 @@ class GrText():
         posA = f' {self.position.angle}' if self.position.angle is not None else ''
         layer =  f' (layer "{dequote(self.layer)}"{ko})' if self.layer is not None else ''
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
+        uuid = f'\n{indents}  (uuid "{dequote(self.uuid)}")' if self.uuid is not None else ''
         locked = f' locked' if self.locked else ''
 
-        expression =  f'{indents}(gr_text{locked} "{dequote(self.text)}" (at {self.position.X} {self.position.Y}{posA}){layer}{tstamp}\n'
+        expression =  f'{indents}(gr_text{locked} "{dequote(self.text)}" (at {self.position.X} {self.position.Y}{posA}){layer}{tstamp}{uuid}\n'
         expression += f'{indents}  {self.effects.to_sexpr()}'
         if self.renderCache is not None:
             expression += self.renderCache.to_sexpr(indent+2)
@@ -376,8 +383,18 @@ class GrRect():
     fill: Optional[str] = None
     """The optional ``fill`` toke defines how the rectangle is filled. Valid fill types are solid and none. If not defined, the rectangle is not filled"""
 
+    stroke: Optional[Stroke] = None
+    """The ``stroke`` token defines the line style of the rectangle.
+
+    Available since KiCad v8"""
+
     tstamp: Optional[str] = None      # Used since KiCad 6
     """The ``tstamp`` token defines the unique identifier of the rectangle object"""
+
+    uuid: Optional[str] = None
+    """The ``uuid`` token defines the unique identifier of the rectangle object.
+
+    Available since KiCad v8 (replaces tstamp)"""
 
     locked: bool = False
     """The ``locked`` token defines if the object may be moved or not"""
@@ -410,7 +427,9 @@ class GrRect():
             if item[0] == 'start': object.start = Position.from_sexpr(item)
             if item[0] == 'end': object.end = Position.from_sexpr(item)
             if item[0] == 'layer': object.layer = item[1]
+            if item[0] == 'stroke': object.stroke = Stroke.from_sexpr(item)
             if item[0] == 'tstamp': object.tstamp = item[1]
+            if item[0] == 'uuid': object.uuid = item[1]
             if item[0] == 'fill': object.fill = item[1]
             if item[0] == 'width': object.width = item[1]
         return object
@@ -430,10 +449,13 @@ class GrRect():
         locked = f' locked' if self.locked else ''
 
         tstamp = f' (tstamp {self.tstamp})' if self.tstamp is not None else ''
+        uuid = f' (uuid "{dequote(self.uuid)}")' if self.uuid is not None else ''
         layer =  f' (layer "{dequote(self.layer)}")' if self.layer is not None else ''
         fill = f' (fill {self.fill})' if self.fill is not None else ''
+        stroke = f'\n{indents}  {self.stroke.to_sexpr(indent=0, newline=False)}' if self.stroke is not None else ''
+        width = f' (width {self.width})' if self.stroke is None else ''
 
-        return f'{indents}(gr_rect{locked} (start {self.start.X} {self.start.Y}) (end {self.end.X} {self.end.Y}){layer} (width {self.width}){fill}{tstamp}){endline}'
+        return f'{indents}(gr_rect{locked} (start {self.start.X} {self.start.Y}) (end {self.end.X} {self.end.Y}){layer}{stroke}{width}{fill}{tstamp}{uuid}){endline}'
 
 @dataclass
 class GrCircle():

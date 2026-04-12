@@ -32,6 +32,9 @@ class GeneralSettings():
     thickness: float = 1.6
     """The ``thickness`` token attribute defines the overall board thickness"""
 
+    legacyTeardrops: Optional[bool] = None
+    """The ``legacy_teardrops`` token attribute. Available since KiCad v8"""
+
     @classmethod
     def from_sexpr(cls, exp: list) -> GeneralSettings:
         """Convert the given S-Expresstion into a GeneralSettings object
@@ -55,6 +58,7 @@ class GeneralSettings():
         object = cls()
         for item in exp:
             if item[0] == 'thickness': object.thickness = item[1]
+            if item[0] == 'legacy_teardrops': object.legacyTeardrops = True if item[1] == 'yes' else False
         return object
 
     def to_sexpr(self, indent=2, newline=True) -> str:
@@ -72,6 +76,9 @@ class GeneralSettings():
 
         expression =  f'{indents}(general\n'
         expression += f'{indents}  (thickness {self.thickness})\n'
+        if self.legacyTeardrops is not None:
+            lt = 'yes' if self.legacyTeardrops else 'no'
+            expression += f'{indents}  (legacy_teardrops {lt})\n'
         expression += f'{indents}){endline}'
         return expression
 
@@ -465,7 +472,7 @@ class PlotSettings():
     plotFameRef: bool = False
     """The ``plotFameRef`` token defines if the border and title block should be plotted"""
 
-    viasOnMask: bool = False
+    viasOnMask: Optional[bool] = None
     """The ``viasOnMask`` token defines if the vias are to be tented"""
 
     mode: int = 1
@@ -475,13 +482,13 @@ class PlotSettings():
     useAuxOrigin: bool = False
     """The ``useAuxOrigin`` token determines if all coordinates are offset by the defined user origin"""
 
-    hpglPenNumber: int = 0
+    hpglPenNumber: Optional[int] = None
     """The ``hpglPenNumber`` token defines the integer pen number used for HPGL plots"""
 
-    hpglPenSpeed: int = 0
+    hpglPenSpeed: Optional[int] = None
     """The ``hpglPenSpeed`` token defines the integer pen speed used for HPGL plots"""
 
-    hpglPenDiameter: float = 0.0
+    hpglPenDiameter: Optional[float] = None
     """The ``hpglPenDiameter`` token defines the floating point pen size for HPGL plots"""
 
     dxfPolygonMode: bool = False
@@ -500,13 +507,13 @@ class PlotSettings():
     psA4Output: bool = False
     """The ``psA4Output`` token defines if the A4 page size should be used for PostScript plots"""
 
-    plotReference: bool = False
+    plotReference: Optional[bool] = None
     """The ``plotReference`` token defines if hidden reference field text should be plotted"""
 
-    plotValue: bool = False
+    plotValue: Optional[bool] = None
     """The ``plotValue`` token defines if hidden value field text should be plotted"""
 
-    plotInvisibleText: bool = False
+    plotInvisibleText: Optional[bool] = None
     """The ``plotInvisibleText`` token defines if hidden text other than the reference and
     value fields should be plotted"""
 
@@ -677,7 +684,8 @@ class PlotSettings():
         if self.excludeEdgeLayer is not None:
             expression += f'{indents}  (excludeedgelayer {_yn(self.excludeEdgeLayer)})\n'
         expression += f'{indents}  (plotframeref {_yn(self.plotFameRef)})\n'
-        expression += f'{indents}  (viasonmask {_yn(self.viasOnMask)})\n'
+        if self.viasOnMask is not None:
+            expression += f'{indents}  (viasonmask {_yn(self.viasOnMask)})\n'
         expression += f'{indents}  (mode {self.mode})\n'
         expression += f'{indents}  (useauxorigin {_yn(self.useAuxOrigin)})\n'
         if self.pdfFrontFpPropertyPopups is not None:
@@ -688,9 +696,12 @@ class PlotSettings():
             expression += f'{indents}  (pdf_metadata {_yn(self.pdfMetadata)})\n'
         if self.pdfSingleDocument is not None:
             expression += f'{indents}  (pdf_single_document {_yn(self.pdfSingleDocument)})\n'
-        expression += f'{indents}  (hpglpennumber {self.hpglPenNumber})\n'
-        expression += f'{indents}  (hpglpenspeed {self.hpglPenSpeed})\n'
-        expression += f'{indents}  (hpglpendiameter {float(self.hpglPenDiameter):.6f})\n'
+        if self.hpglPenNumber is not None:
+            expression += f'{indents}  (hpglpennumber {self.hpglPenNumber})\n'
+        if self.hpglPenSpeed is not None:
+            expression += f'{indents}  (hpglpenspeed {self.hpglPenSpeed})\n'
+        if self.hpglPenDiameter is not None:
+            expression += f'{indents}  (hpglpendiameter {float(self.hpglPenDiameter):.6f})\n'
         expression += f'{indents}  (dxfpolygonmode {_yn(self.dxfPolygonMode)})\n'
         expression += f'{indents}  (dxfimperialunits {_yn(self.dxfImperialUnits)})\n'
         expression += f'{indents}  (dxfusepcbnewfont {_yn(self.dxfUsePcbnewFont)})\n'
@@ -698,9 +709,12 @@ class PlotSettings():
         expression += f'{indents}  (psa4output {_yn(self.psA4Output)})\n'
         if self.plotBlackAndWhite is not None:
             expression += f'{indents}  (plot_black_and_white {_yn(self.plotBlackAndWhite)})\n'
-        expression += f'{indents}  (plotreference {_yn(self.plotReference)})\n'
-        expression += f'{indents}  (plotvalue {_yn(self.plotValue)})\n'
-        expression += f'{indents}  (plotinvisibletext {_yn(self.plotInvisibleText)})\n'
+        if self.plotReference is not None:
+            expression += f'{indents}  (plotreference {_yn(self.plotReference)})\n'
+        if self.plotValue is not None:
+            expression += f'{indents}  (plotvalue {_yn(self.plotValue)})\n'
+        if self.plotInvisibleText is not None:
+            expression += f'{indents}  (plotinvisibletext {_yn(self.plotInvisibleText)})\n'
         expression += f'{indents}  (sketchpadsonfab {_yn(self.sketchPadsOnFab)})\n'
         if self.plotPadNumbers is not None:
             expression += f'{indents}  (plotpadnumbers {_yn(self.plotPadNumbers)})\n'
@@ -817,6 +831,28 @@ class SetupData():
             if item[0] == 'pad_to_paste_clearance_ratio': object.padToPasteClearanceRatio = item[1]
             if item[0] == 'aux_axis_origin': object.auxAxisOrigin = Position().from_sexpr(item)
             if item[0] == 'grid_origin': object.gridOrigin = Position().from_sexpr(item)
+            if item[0] == 'allow_soldermask_bridges_in_footprints':
+                object.allowSoldermaskBridgesInFootprints = True if item[1] == 'yes' else False
+            if item[0] == 'tenting':
+                for sub in item[1:]:
+                    if isinstance(sub, list) and sub[0] == 'front':
+                        object.tentingFront = True if sub[1] == 'yes' else False
+                    if isinstance(sub, list) and sub[0] == 'back':
+                        object.tentingBack = True if sub[1] == 'yes' else False
+            if item[0] == 'covering':
+                for sub in item[1:]:
+                    if isinstance(sub, list) and sub[0] == 'front':
+                        object.coveringFront = True if sub[1] == 'yes' else False
+                    if isinstance(sub, list) and sub[0] == 'back':
+                        object.coveringBack = True if sub[1] == 'yes' else False
+            if item[0] == 'plugging':
+                for sub in item[1:]:
+                    if isinstance(sub, list) and sub[0] == 'front':
+                        object.pluggingFront = True if sub[1] == 'yes' else False
+                    if isinstance(sub, list) and sub[0] == 'back':
+                        object.pluggingBack = True if sub[1] == 'yes' else False
+            if item[0] == 'capping': object.capping = True if item[1] == 'yes' else False
+            if item[0] == 'filling': object.filling = True if item[1] == 'yes' else False
             if item[0] == 'pcbplotparams': object.plotSettings = PlotSettings().from_sexpr(item)
         return object
 
@@ -841,6 +877,34 @@ class SetupData():
         if self.padToPasteClearanceRatio is not None: expression += f'{indents}  (pad_to_paste_clearance_ratio {self.padToPasteClearanceRatio})\n'
         if self.auxAxisOrigin is not None:            expression += f'{indents}  (aux_axis_origin {self.auxAxisOrigin.X} {self.auxAxisOrigin.Y})\n'
         if self.gridOrigin is not None:               expression += f'{indents}  (grid_origin {self.gridOrigin.X} {self.gridOrigin.Y})\n'
+        _yn = lambda v: 'yes' if v else 'no'
+        if self.allowSoldermaskBridgesInFootprints is not None:
+            expression += f'{indents}  (allow_soldermask_bridges_in_footprints {_yn(self.allowSoldermaskBridgesInFootprints)})\n'
+        if self.tentingFront is not None or self.tentingBack is not None:
+            expression += f'{indents}  (tenting'
+            if self.tentingFront is not None:
+                expression += f' (front {_yn(self.tentingFront)})'
+            if self.tentingBack is not None:
+                expression += f' (back {_yn(self.tentingBack)})'
+            expression += ')\n'
+        if self.coveringFront is not None or self.coveringBack is not None:
+            expression += f'{indents}  (covering'
+            if self.coveringFront is not None:
+                expression += f' (front {_yn(self.coveringFront)})'
+            if self.coveringBack is not None:
+                expression += f' (back {_yn(self.coveringBack)})'
+            expression += ')\n'
+        if self.pluggingFront is not None or self.pluggingBack is not None:
+            expression += f'{indents}  (plugging'
+            if self.pluggingFront is not None:
+                expression += f' (front {_yn(self.pluggingFront)})'
+            if self.pluggingBack is not None:
+                expression += f' (back {_yn(self.pluggingBack)})'
+            expression += ')\n'
+        if self.capping is not None:
+            expression += f'{indents}  (capping {_yn(self.capping)})\n'
+        if self.filling is not None:
+            expression += f'{indents}  (filling {_yn(self.filling)})\n'
         if self.plotSettings is not None:             expression += self.plotSettings.to_sexpr(indent+2)
         expression += f'{indents}){endline}'
         return expression
