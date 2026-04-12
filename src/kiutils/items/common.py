@@ -891,7 +891,7 @@ class Property():
         indents = ' '*indent
         endline = '\n' if newline else ''
 
-        posA = f' {_fmt(self.position.angle)}' if self.position.angle is not None else ''
+        posA = f' {_fmt(self.position.angle if self.position.angle is not None else 0)}'
         id = f' (id {self.id})' if self.id is not None else ''
         if self.showName is not None:
             sn = f' (show_name {"yes" if self.showName else "no"})'
