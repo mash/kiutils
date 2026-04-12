@@ -21,6 +21,7 @@ from typing import Optional, List, Dict
 
 from kiutils.items.common import Fill, Position, ColorRGBA, ProjectInstance, Stroke, Effects, Property
 from kiutils.utils.strings import dequote, _fmt
+from uuid import uuid4
 
 @dataclass
 class Junction():
@@ -44,7 +45,12 @@ class Junction():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> Junction:
         """Convert the given S-Expresstion into a Junction object
 
@@ -102,7 +108,12 @@ class NoConnect():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> NoConnect:
         """Convert the given S-Expresstion into a NoConnect object
 
@@ -165,7 +176,12 @@ class BusEntry():
     stroke: Stroke = field(default_factory=lambda: Stroke())
     """The ``stroke`` defines how the bus entry is drawn"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> BusEntry:
         """Convert the given S-Expresstion into a BusEntry object
 
@@ -299,7 +315,12 @@ class Connection():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> Connection:
         """Convert the given S-Expresstion into a Connection object
 
@@ -371,7 +392,12 @@ class PolyLine():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> PolyLine:
         """Convert the given S-Expresstion into a PolyLine object
 
@@ -449,7 +475,12 @@ class Text():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> Text:
         """Convert the given S-Expresstion into a Text object
 
@@ -547,7 +578,12 @@ class TextBox():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> TextBox:
         """Convert the given S-Expresstion into a TextBox object
 
@@ -635,7 +671,12 @@ class LocalLabel():
     """The ``fields_autoplaced`` is a flag that indicates that any PROPERTIES associated
     with the global label have been place automatically"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> LocalLabel:
         """Convert the given S-Expresstion into a LocalLabel object
 
@@ -719,7 +760,12 @@ class GlobalLabel():
     """	The ``properties`` token defines a list of properties of the global label. Currently, the
     only supported property is the inter-sheet reference"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> GlobalLabel:
         """Convert the given S-Expresstion into a GlobalLabel object
 
@@ -804,7 +850,12 @@ class HierarchicalLabel():
     """The ``fields_autoplaced`` is a flag that indicates that any PROPERTIES associated
     with the global label have been place automatically"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> HierarchicalLabel:
         """Convert the given S-Expresstion into a HierarchicalLabel object
 
@@ -1201,7 +1252,12 @@ class HierarchicalPin():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> HierarchicalPin:
         """Convert the given S-Expresstion into a HierarchicalPin object
 
@@ -1442,7 +1498,12 @@ class HierarchicalSheet():
 
     Available since KiCad v7."""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> HierarchicalSheet:
         """Convert the given S-Expresstion into a HierarchicalSheet object
 
@@ -1690,7 +1751,12 @@ class Rectangle():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> Rectangle:
         """Convert the given S-Expresstion into a Rectangle object
 
@@ -1769,7 +1835,12 @@ class Arc():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> Arc:
         """Convert the given S-Expresstion into a Arc object
 
@@ -1846,7 +1917,12 @@ class Circle():
     uuid: Optional[str] = None
     """The optional ``uuid`` defines the universally unique identifier. Defaults to ``None.``"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> Circle:
         """Convert the given S-Expresstion into a Circle object
 
@@ -1933,7 +2009,12 @@ class NetclassFlag():
     """The ``fields_autoplaced`` is a flag that indicates that any PROPERTIES associated
     with the netclas flag have been place automatically"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> NetclassFlag:
         """Convert the given S-Expresstion into a Circle object
 

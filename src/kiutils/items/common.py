@@ -21,6 +21,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List, Dict
 
 from kiutils.utils.strings import dequote, _fmt
+from uuid import uuid4
 
 @dataclass
 class Position():
@@ -1127,7 +1128,12 @@ class Image():
     """The optional ``layer`` token defines the canonical layer name when the image is used inside
     a footprint or PCB. When used inside a schematic, this token is required to be ``None``."""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> Image:
         """Convert the given S-Expresstion into a Image object
 

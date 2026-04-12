@@ -22,6 +22,7 @@ from typing import Optional, List
 
 from kiutils.items.common import Effects, Position, RenderCache, Stroke
 from kiutils.utils.strings import dequote, _fmt
+from uuid import uuid4
 
 @dataclass
 class GrText():
@@ -65,7 +66,12 @@ class GrText():
 
     Available since KiCad v7"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> GrText:
         """Convert the given S-Expresstion into a GrText object
 
@@ -399,7 +405,12 @@ class GrRect():
     locked: bool = False
     """The ``locked`` token defines if the object may be moved or not"""
 
+    def __post_init__(self):
+        if self.uuid is None:
+            self.uuid = str(uuid4())
+
     @classmethod
+
     def from_sexpr(cls, exp: list) -> GrRect:
         """Convert the given S-Expresstion into a GrRect object
 
