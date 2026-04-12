@@ -16,6 +16,7 @@
   (net 0 "")
 
   (gr_text "cached stuff\n\n" (at 137.16 93.98) (layer "F.Cu") (tstamp 25874870-6d4f-4bc3-8a66-95a041f89adb)
+    (uuid "308957fd-1915-4cb1-8dd5-359cb8e7d028")
     (effects (font (face "Bell MT") (size 1.5 1.5) (thickness 0.3) (bold yes)) (justify left bottom))
     (render_cache "cached stuff\n\n" 0
       (polygon

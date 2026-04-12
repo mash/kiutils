@@ -78,7 +78,7 @@
     (options (clearance convexhull) (anchor circle))
     (primitives
       (gr_circle (center 1.2 -2.2) (end 6.008326 -2.2) (width 0.2) (fill yes))
-      (gr_rect (start -1.8 3.8) (end 2.8 -0.8) (width 0.2))
+      (gr_rect (start -1.8 3.8) (end 2.8 -0.8) (width 0.2) (uuid "2aff0f82-f59d-4f65-adcd-6cc83d2710d3"))
       (gr_line (start 2.2 0.4) (end 6.6 0.4) (width 0.2))
       (gr_circle (center 1.8 0.4) (end 6.891169 0.4) (width 0.2))
       (gr_poly (pts

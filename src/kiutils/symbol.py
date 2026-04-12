@@ -371,11 +371,14 @@ class Symbol():
     """The ``units`` can be one or more child symbol tokens embedded in a parent symbol"""
 
     @classmethod
-    def from_sexpr(cls, exp: list) -> Symbol:
+    def from_sexpr(cls, exp: list, parent_entry_name: str = None) -> Symbol:
         """Convert the given S-Expression into a Symbol object
 
         Args:
             - exp (list): Part of parsed S-Expression ``(symbol ...)``
+            - parent_entry_name (str): When parsing a child unit, the parent symbol's
+              ``entryName``. Used to correctly split ``<entryName>_<unitId>_<styleId>``.
+              ``None`` for top-level symbols.
 
         Raises:
             - Exception: When given parameter's type is not a list
@@ -391,7 +394,29 @@ class Symbol():
             raise Exception("Expression does not have the correct type")
 
         object = cls()
-        object.libId = exp[1]
+        raw_id = exp[1]
+
+        if parent_entry_name is not None:
+            # Child unit: strip known parent name, parse _unitId_styleId from suffix
+            object.libraryNickname = None
+            object.entryName = parent_entry_name
+            suffix = raw_id[len(parent_entry_name):]
+            m = re.match(r'^_(\d+)_(\d+)$', suffix)
+            if m:
+                object.unitId = int(m.group(1))
+                object.styleId = int(m.group(2))
+        else:
+            # Top-level symbol: parse optional library nickname, no unit/style IDs
+            m = re.match(r'^(.+?):(.+)$', raw_id)
+            if m:
+                object.libraryNickname = m.group(1)
+                object.entryName = m.group(2)
+            else:
+                object.libraryNickname = None
+                object.entryName = raw_id
+            object.unitId = None
+            object.styleId = None
+
         for item in exp[2:]:
             if item[0] == 'extends': object.extends = item[1]
             if item[0] == 'pin_numbers':
@@ -415,7 +440,7 @@ class Symbol():
             if item[0] == 'on_board': object.onBoard = True if item[1] == 'yes' else False
             if item[0] == 'power': object.isPower = True
 
-            if item[0] == 'symbol': object.units.append(Symbol().from_sexpr(item))
+            if item[0] == 'symbol': object.units.append(Symbol.from_sexpr(item, parent_entry_name=object.entryName))
             if item[0] == 'property': object.properties.append(Property().from_sexpr(item))
 
             if item[0] == 'pin': object.pins.append(SymbolPin().from_sexpr(item))
