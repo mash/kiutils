@@ -542,9 +542,10 @@ class Net():
         if exp[0] != 'net':
             raise Exception("Expression does not have the correct type")
 
+        # KiCad 10 emits `(net "name")` inside pad blocks (no number).
         object = cls()
-        object.number = exp[1]
-        object.name = exp[2]
+        object.number = None
+        object.name = exp[1]
         return object
 
     def to_sexpr(self, indent: int = 0, newline: bool = False) -> str:
